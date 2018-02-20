@@ -3,7 +3,6 @@ package com.pany.adv.advtask.domain;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "request_to_add_advertisement_construction")
@@ -11,7 +10,7 @@ public class ConstructionRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name = "created_on")
     private Date date;
@@ -29,9 +28,9 @@ public class ConstructionRequest {
     @Column(name = "data_of_advertisement_construction")
     private int adConstruction; //1:1 by id
 
-    @Column(name = "handler")
-    @OneToMany(targetEntity = User.class)
-    private List handler; //1:n
+    //@Column(name = "handler")
+    @ManyToOne
+    private User handler; //1:n
 
     @Column(name = "date_of_processed")
     private Date dateProcessed;
@@ -48,7 +47,7 @@ public class ConstructionRequest {
     public ConstructionRequest() {}
 
     public ConstructionRequest(Date date, User user, String status, int adPlace, int adConstruction,
-                               List handler, Date dateProcessed, int version, String reason, String sign) {
+                               User handler, Date dateProcessed, int version, String reason, String sign) {
         this.date = date;
         this.user = user;
         this.status = status;
@@ -61,11 +60,11 @@ public class ConstructionRequest {
         this.sign = sign;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -109,11 +108,11 @@ public class ConstructionRequest {
         this.adConstruction = adConstruction;
     }
 
-    public List getHandler() {
+    public User getHandler() {
         return handler;
     }
 
-    public void setHandler(List handler) {
+    public void setHandler(User handler) {
         this.handler = handler;
     }
 
