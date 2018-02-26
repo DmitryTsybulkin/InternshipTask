@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <!--<link rel = "stylesheet" type="text/css" href = "" /> -->
+    <title>Users</title>
+    <style>
+        table, td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<header><h1>mega kek</h1></header>
+<div class = "container">
+    <div class="table-users">
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>login</th>
+                    <th>password</th>
+                    <th>name</th>
+                    <th>surname</th>
+                    <th>patronymic</th>
+                    <th>role</th>
+                    <th>admin</th>
+                    <th>editor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.login}"></td>
+                    <td th:text="${user.password}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.surname}"></td>
+                    <td th:text="${user.patronymic}"></td>
+                    <td th:text="${user.role}"></td>
+                    <td th:text="${user.admin}"></td>
+                    <td th:text="${user.editor}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,8 +1,8 @@
 package com.pany.adv.advtask.service;
 
-//import com.pany.adv.advtask.domain.Municipality;
 import com.pany.adv.advtask.domain.User;
-//import com.pany.adv.advtask.repository.MunicipalityRepository;
+import com.pany.adv.advtask.repository.ConstructionRequestRep;
+import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,21 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-//    @Autowired
-//    MunicipalityRepository municipalityRepository;
+    @Autowired
+    ConstructionRequestRep constructionRequestRep;
+
+    @Autowired
+    MunicipalityRep municipalityRep;
+
+    private SecurityEncoder securityEncoder; // not work
+
+    private String password = "epicPassword";
 
     public void insertData() {
         log.info("> Inserting data...");
-        //municipalityRepository.save(new Municipality("bestMunicipality"));  // add municipality
-        userRepository.save(new User("BestLogin", "password", "BestUser", "BestSurname",
-                "BestPatron", "BestRole", true, true));
-        userRepository.save(new User("fsd", "fsd", "das", "fsd", "fsd", "fsd", true, true));
+        userRepository.save(new User("BestLogin", "stupidPassword",
+                "BestName", "BestSurname", "SuperPatron", "RegularRole",
+                municipalityRep.findAll(), true, true));
         log.info("> Done.");
     }
 

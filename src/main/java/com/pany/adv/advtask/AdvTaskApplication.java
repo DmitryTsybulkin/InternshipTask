@@ -1,6 +1,7 @@
 package com.pany.adv.advtask;
 
 import com.pany.adv.advtask.service.ConstructionRequestService;
+import com.pany.adv.advtask.service.MunicipalityService;
 import com.pany.adv.advtask.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,13 @@ public class AdvTaskApplication {
 	}
 
 	@Bean
-	CommandLineRunner start(UserService service, ConstructionRequestService requestService) {
+	CommandLineRunner start(UserService service, ConstructionRequestService requestService, MunicipalityService municipalityService) {
 		return args -> {
 			log.info("@@ Inserting Data...");
+			municipalityService.insertData();
 			requestService.insertData();
 			service.insertData();
+			requestService.insertData();
 			log.info("@@ findAll() call...");
 			service.findAll().forEach(user -> log.info(user.toString()));
 		};

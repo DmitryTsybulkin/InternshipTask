@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "request_to_add_advertisement_construction")
+@Table(name = "requests")
 public class ConstructionRequest {
 
     @Id
@@ -16,48 +16,50 @@ public class ConstructionRequest {
     private Date date;
 
     @ManyToOne
-    //@Column(name = "applicant")
-    private User user; //1:n
+    private User applicant; //1:n
 
     @Column(name = "status")
     private String status;
 
-    @Column(name = "data_of_advertisement_place")
-    private int adPlace; //1:1 by id
+    @OneToOne
+    private AdvertisementPlace advertisementPlace; //1:1 by id
 
-    @Column(name = "data_of_advertisement_construction")
-    private int adConstruction; //1:1 by id
-
-    //@Column(name = "handler")
+    @OneToOne
+    private AdvertisementConstruction advertisementConstruction; //1:1 by id
+    
     @ManyToOne
-    private User handler; //1:n
+    private User handler; //n:1
 
-    @Column(name = "date_of_processed")
+    @Column(name = "processed_on")
     private Date dateProcessed;
 
     @Column(name = "version")
-    private int version;
+    private String version;
 
-    @Column(name = "reason_for_rejection")
+    @Column(name = "reason")
     private String reason;
 
-    @Column(name = "sign_of_relevance")
-    private String sign;
+    @Column(name = "relevance")
+    private String actuality;
+
+    @OneToOne
+    private Photo photoId;
 
     public ConstructionRequest() {}
 
-    public ConstructionRequest(Date date, User user, String status, int adPlace, int adConstruction,
-                               User handler, Date dateProcessed, int version, String reason, String sign) {
+    public ConstructionRequest(Date date, User applicant, String status, AdvertisementPlace advertisementPlace, AdvertisementConstruction advertisementConstruction,
+                               User handler, Date dateProcessed, String version, String reason, String actuality, Photo photoId) {
         this.date = date;
-        this.user = user;
+        this.applicant = applicant;
         this.status = status;
-        this.adPlace = adPlace;
-        this.adConstruction = adConstruction;
+        this.advertisementPlace = advertisementPlace;
+        this.advertisementConstruction = advertisementConstruction;
         this.handler = handler;
         this.dateProcessed = dateProcessed;
         this.version = version;
         this.reason = reason;
-        this.sign = sign;
+        this.actuality = actuality;
+        this.photoId = photoId;
     }
 
     public long getId() {
@@ -77,11 +79,11 @@ public class ConstructionRequest {
     }
 
     public User getUser() {
-        return user;
+        return applicant;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User applicant) {
+        this.applicant = applicant;
     }
 
     public String getStatus() {
@@ -92,20 +94,20 @@ public class ConstructionRequest {
         this.status = status;
     }
 
-    public int getAdPlace() {
-        return adPlace;
+    public AdvertisementPlace getAdPlace() {
+        return advertisementPlace;
     }
 
-    public void setAdPlace(int adPlace) {
-        this.adPlace = adPlace;
+    public void setAdPlace(AdvertisementPlace advertisementPlace) {
+        this.advertisementPlace = advertisementPlace;
     }
 
-    public int getAdConstruction() {
-        return adConstruction;
+    public AdvertisementConstruction getAdConstruction() {
+        return advertisementConstruction;
     }
 
-    public void setAdConstruction(int adConstruction) {
-        this.adConstruction = adConstruction;
+    public void setAdConstruction(AdvertisementConstruction advertisementConstruction) {
+        this.advertisementConstruction = advertisementConstruction;
     }
 
     public User getHandler() {
@@ -124,11 +126,11 @@ public class ConstructionRequest {
         this.dateProcessed = dateProcessed;
     }
 
-    public int getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -141,11 +143,11 @@ public class ConstructionRequest {
     }
 
     public String getSign() {
-        return sign;
+        return actuality;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setSign(String actuality) {
+        this.actuality = actuality;
     }
 
     @Override
@@ -153,16 +155,23 @@ public class ConstructionRequest {
         return "ConstructionRequest{" +
                 "id=" + id +
                 ", date=" + date +
-                ", user=" + user +
+                ", applicant=" + applicant +
                 ", status='" + status + '\'' +
-                ", adPlace=" + adPlace +
-                ", adConstruction=" + adConstruction +
+                ", advertisementPlace=" + advertisementPlace +
+                ", advertisementConstruction=" + advertisementConstruction +
                 ", handler=" + handler +
                 ", dateProcessed=" + dateProcessed +
                 ", version=" + version +
                 ", reason='" + reason + '\'' +
-                ", sign='" + sign + '\'' +
+                ", actuality='" + actuality + '\'' +
                 '}';
     }
 
+    public Photo getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(Photo photoId) {
+        this.photoId = photoId;
+    }
 }

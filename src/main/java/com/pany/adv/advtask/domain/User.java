@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -29,12 +29,10 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @OneToMany
-    private List<ConstructionRequest> request;
-
-//    @Column(name = "municipality")
-//    //@JoinTable
-//    private Municipality municipality; // n:m
+    @ManyToMany
+    @JoinTable(name = "municipalities", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "municipality_id"))
+    private List<Municipality> municipality; // n:m
 
     @Column(name = "is_admin")
     private boolean admin;
@@ -43,13 +41,14 @@ public class User {
     private boolean editor;
 
     public User(String login, String password, String name, String surname, String patronymic,
-                String role, boolean admin, boolean editor) {
+                String role, List<Municipality> municipality, boolean admin, boolean editor) {
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
         this.role = role;
+        this.municipality = municipality;
         //this.municipality = municipality;
         this.admin = admin;
         this.editor = editor;
@@ -137,11 +136,18 @@ public class User {
         this.editor = editor;
     }
 
+    public List<Municipality> getMunicipality() {
+        return municipality;
+    }
+
+    public void setMunicipality(List<Municipality> municipality) {
+        this.municipality = municipality;
+    }
+
     public String toString() {
         return "* User Entry(" + "id: " + id + "login: " + login + "password: " +
                 password + "name: " + name + "surname: " +
                 surname + "patronymic: " + patronymic + "role: " +
                 role + "municipality: " + ").";
     }
-
 }
