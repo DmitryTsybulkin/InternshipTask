@@ -29,7 +29,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "municipalities", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "municipality_id"))
     private List<Municipality> municipality; // n:m
@@ -49,7 +49,6 @@ public class User {
         this.patronymic = patronymic;
         this.role = role;
         this.municipality = municipality;
-        //this.municipality = municipality;
         this.admin = admin;
         this.editor = editor;
     }
@@ -84,10 +83,6 @@ public class User {
         return role;
     }
 
-//    public Object getMunicipality() {
-//        return municipality;
-//    }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -115,10 +110,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
-//    public void setMunicipality(Municipality municipality) {
-//        this.municipality = municipality;
-//    }
 
     public boolean isAdmin() {
         return admin;

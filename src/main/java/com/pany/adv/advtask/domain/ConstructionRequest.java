@@ -43,12 +43,12 @@ public class ConstructionRequest {
     private String actuality;
 
     @OneToOne
-    private Photo photoId;
+    private Photo photo;
 
     public ConstructionRequest() {}
 
     public ConstructionRequest(Date date, User applicant, String status, AdvertisementPlace advertisementPlace, AdvertisementConstruction advertisementConstruction,
-                               User handler, Date dateProcessed, String version, String reason, String actuality, Photo photoId) {
+                               User handler, Date dateProcessed, String version, String reason, String actuality, Photo photo) {
         this.date = date;
         this.applicant = applicant;
         this.status = status;
@@ -59,7 +59,7 @@ public class ConstructionRequest {
         this.version = version;
         this.reason = reason;
         this.actuality = actuality;
-        this.photoId = photoId;
+        this.photo = photo;
     }
 
     public long getId() {
@@ -168,10 +168,10 @@ public class ConstructionRequest {
     }
 
     public Photo getPhotoId() {
-        return photoId;
+        return photo;
     }
 
-    public void setPhotoId(Photo photoId) {
-        this.photoId = photoId;
+    public void setPhotoId(Photo photo) {
+        this.photo = photo;
     }
 }

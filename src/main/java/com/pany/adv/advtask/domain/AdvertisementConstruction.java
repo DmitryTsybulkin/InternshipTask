@@ -11,7 +11,7 @@ public class AdvertisementConstruction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private AdvertisementPlace advertisementPlaceId;
 
     @Column(name = "owner")

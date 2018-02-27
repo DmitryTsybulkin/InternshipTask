@@ -14,10 +14,10 @@ public class RequestsArchive {
     @ManyToOne
     private ConstructionRequest requestId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private AdvertisementPlace advertisementPlace;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private AdvertisementConstruction advertisementConstruction;
 
     @Column(name = "created_on")

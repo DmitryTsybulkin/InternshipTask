@@ -26,11 +26,12 @@ public class UserService {
 
     private SecurityEncoder securityEncoder; // not work
 
-    private String password = "epicPassword";
+    private CharSequence charSequence;
 
     public void insertData() {
         log.info("> Inserting data...");
-        userRepository.save(new User("BestLogin", "stupidPassword",
+        String password = "epicPassword";
+        userRepository.save(new User("BestLogin", "bestPassword",
                 "BestName", "BestSurname", "SuperPatron", "RegularRole",
                 municipalityRep.findAll(), true, true));
         log.info("> Done.");
