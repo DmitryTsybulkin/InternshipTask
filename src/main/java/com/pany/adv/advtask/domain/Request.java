@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "requests")
-public class ConstructionRequest {
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +22,10 @@ public class ConstructionRequest {
     private String status;
 
     @OneToOne
-    private AdvertisementPlace advertisementPlace; //1:1 by id
+    private AdvPlace advPlace; //1:1 by id
 
     @OneToOne
-    private AdvertisementConstruction advertisementConstruction; //1:1 by id
+    private AdvConstruction advConstruction; //1:1 by id
     
     @ManyToOne
     private User handler; //n:1
@@ -45,22 +45,9 @@ public class ConstructionRequest {
     @OneToOne
     private Photo photo;
 
-    public ConstructionRequest() {}
+    public Request() {}
 
-    public ConstructionRequest(Date date, User applicant, String status, AdvertisementPlace advertisementPlace, AdvertisementConstruction advertisementConstruction,
-                               User handler, Date dateProcessed, String version, String reason, String actuality, Photo photo) {
-        this.date = date;
-        this.applicant = applicant;
-        this.status = status;
-        this.advertisementPlace = advertisementPlace;
-        this.advertisementConstruction = advertisementConstruction;
-        this.handler = handler;
-        this.dateProcessed = dateProcessed;
-        this.version = version;
-        this.reason = reason;
-        this.actuality = actuality;
-        this.photo = photo;
-    }
+    //Getters & Setters
 
     public long getId() {
         return id;
@@ -78,11 +65,11 @@ public class ConstructionRequest {
         this.date = date;
     }
 
-    public User getUser() {
+    public User getApplicant() {
         return applicant;
     }
 
-    public void setUser(User applicant) {
+    public void setApplicant(User applicant) {
         this.applicant = applicant;
     }
 
@@ -94,20 +81,20 @@ public class ConstructionRequest {
         this.status = status;
     }
 
-    public AdvertisementPlace getAdPlace() {
-        return advertisementPlace;
+    public AdvPlace getAdvPlace() {
+        return advPlace;
     }
 
-    public void setAdPlace(AdvertisementPlace advertisementPlace) {
-        this.advertisementPlace = advertisementPlace;
+    public void setAdvPlace(AdvPlace advPlace) {
+        this.advPlace = advPlace;
     }
 
-    public AdvertisementConstruction getAdConstruction() {
-        return advertisementConstruction;
+    public AdvConstruction getAdvConstruction() {
+        return advConstruction;
     }
 
-    public void setAdConstruction(AdvertisementConstruction advertisementConstruction) {
-        this.advertisementConstruction = advertisementConstruction;
+    public void setAdvConstruction(AdvConstruction advConstruction) {
+        this.advConstruction = advConstruction;
     }
 
     public User getHandler() {
@@ -142,23 +129,31 @@ public class ConstructionRequest {
         this.reason = reason;
     }
 
-    public String getSign() {
+    public String getActuality() {
         return actuality;
     }
 
-    public void setSign(String actuality) {
+    public void setActuality(String actuality) {
         this.actuality = actuality;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     @Override
     public String toString() {
-        return "ConstructionRequest{" +
+        return "Request{" +
                 "id=" + id +
                 ", date=" + date +
                 ", applicant=" + applicant +
                 ", status='" + status + '\'' +
-                ", advertisementPlace=" + advertisementPlace +
-                ", advertisementConstruction=" + advertisementConstruction +
+                ", advPlace=" + advPlace +
+                ", advConstruction=" + advConstruction +
                 ", handler=" + handler +
                 ", dateProcessed=" + dateProcessed +
                 ", version=" + version +
@@ -167,11 +162,4 @@ public class ConstructionRequest {
                 '}';
     }
 
-    public Photo getPhotoId() {
-        return photo;
-    }
-
-    public void setPhotoId(Photo photo) {
-        this.photo = photo;
-    }
 }

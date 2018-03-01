@@ -1,7 +1,9 @@
 package com.pany.adv.advtask.repository;
 
-import com.pany.adv.advtask.domain.RequestsArchive;
+import com.pany.adv.advtask.domain.Archive;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ArchiveRep extends JpaRepository<RequestsArchive, Long> {
+@Repository
+public interface ArchiveRep extends JpaRepository<Archive, Long> {
 }

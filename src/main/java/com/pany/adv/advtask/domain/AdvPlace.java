@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "place")
-public class AdvertisementPlace {
+public class AdvPlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,13 +19,13 @@ public class AdvertisementPlace {
     @ManyToOne
     private Municipality municipality;
 
-    public AdvertisementPlace(String owner, String address, Municipality municipality) {
+    public AdvPlace(String owner, String address, Municipality municipality) {
         this.owner = owner;
         this.address = address;
         this.municipality = municipality;
     }
 
-    public AdvertisementPlace() {}
+    public AdvPlace() {}
 
     public String getOwner() {
         return owner;

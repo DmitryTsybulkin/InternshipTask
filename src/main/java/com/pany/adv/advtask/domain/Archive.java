@@ -5,20 +5,20 @@ import java.util.Date;
 
 @Entity
 @Table(name = "archive")
-public class RequestsArchive {
+public class Archive {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
-    private ConstructionRequest requestId;
+    private Request requestId;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private AdvertisementPlace advertisementPlace;
+    private AdvPlace advPlace;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private AdvertisementConstruction advertisementConstruction;
+    private AdvConstruction advConstruction;
 
     @Column(name = "created_on")
     private Date date;
@@ -41,22 +41,7 @@ public class RequestsArchive {
     @Column(name = "relevance")
     private String actuality;
 
-    public RequestsArchive(ConstructionRequest requestId, AdvertisementPlace advertisementPlace,
-                           AdvertisementConstruction advertisementConstruction, Date date, User applicant,
-                           User handler, Date dateProcessed, String version, String reason, String actuality) {
-        this.requestId = requestId;
-        this.advertisementPlace = advertisementPlace;
-        this.advertisementConstruction = advertisementConstruction;
-        this.date = date;
-        this.applicant = applicant;
-        this.handler = handler;
-        this.dateProcessed = dateProcessed;
-        this.version = version;
-        this.reason = reason;
-        this.actuality = actuality;
-    }
-
-    public RequestsArchive() {}
+    public Archive() {}
 
     public long getId() {
         return id;
@@ -66,28 +51,28 @@ public class RequestsArchive {
         this.id = id;
     }
 
-    public ConstructionRequest getRequestId() {
+    public Request getRequestId() {
         return requestId;
     }
 
-    public void setRequestId(ConstructionRequest requestId) {
+    public void setRequestId(Request requestId) {
         this.requestId = requestId;
     }
 
-    public AdvertisementPlace getAdvertisementPlace() {
-        return advertisementPlace;
+    public AdvPlace getAdvPlace() {
+        return advPlace;
     }
 
-    public void setAdvertisementPlace(AdvertisementPlace advertisementPlace) {
-        this.advertisementPlace = advertisementPlace;
+    public void setAdvPlace(AdvPlace advPlace) {
+        this.advPlace = advPlace;
     }
 
-    public AdvertisementConstruction getAdvertisementConstruction() {
-        return advertisementConstruction;
+    public AdvConstruction getAdvConstruction() {
+        return advConstruction;
     }
 
-    public void setAdvertisementConstruction(AdvertisementConstruction advertisementConstruction) {
-        this.advertisementConstruction = advertisementConstruction;
+    public void setAdvConstruction(AdvConstruction advConstruction) {
+        this.advConstruction = advConstruction;
     }
 
     public Date getDate() {
@@ -148,11 +133,11 @@ public class RequestsArchive {
 
     @Override
     public String toString() {
-        return "RequestsArchive{" +
+        return "Archive{" +
                 "id=" + id +
                 ", requestId=" + requestId +
-                ", advertisementPlace=" + advertisementPlace +
-                ", advertisementConstruction=" + advertisementConstruction +
+                ", advPlace=" + advPlace +
+                ", advConstruction=" + advConstruction +
                 ", date=" + date +
                 ", applicant=" + applicant +
                 ", handler=" + handler +
@@ -162,4 +147,7 @@ public class RequestsArchive {
                 ", actuality='" + actuality + '\'' +
                 '}';
     }
+
+
+
 }

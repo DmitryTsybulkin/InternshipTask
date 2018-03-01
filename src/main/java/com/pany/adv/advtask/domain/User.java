@@ -26,9 +26,6 @@ public class User {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @Column(name = "role")
-    private String role;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "municipalities", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "municipality_id"))
@@ -39,19 +36,6 @@ public class User {
 
     @Column(name = "is_editor")
     private boolean editor;
-
-    public User(String login, String password, String name, String surname, String patronymic,
-                String role, List<Municipality> municipality, boolean admin, boolean editor) {
-        this.login = login;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-        this.role = role;
-        this.municipality = municipality;
-        this.admin = admin;
-        this.editor = editor;
-    }
 
     public User() {}
 
@@ -79,10 +63,6 @@ public class User {
         return patronymic;
     }
 
-    public String getRole() {
-        return role;
-    }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -105,10 +85,6 @@ public class User {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public boolean isAdmin() {
@@ -138,7 +114,7 @@ public class User {
     public String toString() {
         return "* User Entry(" + "id: " + id + "login: " + login + "password: " +
                 password + "name: " + name + "surname: " +
-                surname + "patronymic: " + patronymic + "role: " +
-                role + "municipality: " + ").";
+                surname + "patronymic: " + patronymic + "municipality: " + ").";
     }
+
 }

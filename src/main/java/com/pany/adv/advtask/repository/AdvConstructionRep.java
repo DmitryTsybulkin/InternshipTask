@@ -1,9 +1,9 @@
 package com.pany.adv.advtask.repository;
 
-import com.pany.adv.advtask.domain.Municipality;
+import com.pany.adv.advtask.domain.AdvConstruction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MunicipalityRep extends JpaRepository<Municipality, Long> {
+public interface AdvConstructionRep extends JpaRepository<AdvConstruction, Long> {
 }

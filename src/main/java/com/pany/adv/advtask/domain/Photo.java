@@ -11,12 +11,12 @@ public class Photo {
     private long id;
 
     @OneToOne
-    private ConstructionRequest request;
+    private Request request;
 
     @Column(name = "file_address")
     private String address;
 
-    public Photo(ConstructionRequest request, String address) {
+    public Photo(Request request, String address) {
         this.request = request;
         this.address = address;
     }
@@ -31,11 +31,11 @@ public class Photo {
         this.id = id;
     }
 
-    public ConstructionRequest getRequest() {
+    public Request getRequest() {
         return request;
     }
 
-    public void setRequest(ConstructionRequest request) {
+    public void setRequest(Request request) {
         this.request = request;
     }
 

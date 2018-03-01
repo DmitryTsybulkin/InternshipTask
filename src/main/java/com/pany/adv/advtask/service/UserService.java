@@ -1,9 +1,9 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.User;
-import com.pany.adv.advtask.repository.ConstructionRequestRep;
+import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.repository.MunicipalityRep;
-import com.pany.adv.advtask.repository.UserRepository;
+import com.pany.adv.advtask.repository.UserRep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,30 +15,32 @@ import java.util.List;
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    UserRepository userRepository;
+    private final
+    UserRep userRep;
 
-    @Autowired
-    ConstructionRequestRep constructionRequestRep;
-
-    @Autowired
+    private final
     MunicipalityRep municipalityRep;
 
-    private SecurityEncoder securityEncoder; // not work
+    private final SecurityEncoder securityEncoder;
 
-    private CharSequence charSequence;
+    @Autowired
+    public UserService(UserRep userRep, MunicipalityRep municipalityRep, SecurityEncoder securityEncoder) {
+        this.userRep = userRep;
+        this.municipalityRep = municipalityRep;
+        this.securityEncoder = securityEncoder;
+    }
 
     public void insertData() {
         log.info("> Inserting data...");
         String password = "epicPassword";
-        userRepository.save(new User("BestLogin", "bestPassword",
-                "BestName", "BestSurname", "SuperPatron", "RegularRole",
-                municipalityRep.findAll(), true, true));
+        userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder().
+                encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
+                .withMunicipality(municipalityRep.findAll()).withAdmin(true).withEditor(true).build());
         log.info("> Done.");
     }
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRep.findAll();
     }
 
 }

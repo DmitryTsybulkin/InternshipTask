@@ -5,14 +5,14 @@ import java.util.Date;
 
 @Entity
 @Table(name = "constructions")
-public class AdvertisementConstruction {
+public class AdvConstruction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private AdvertisementPlace advertisementPlaceId;
+    private AdvPlace advPlaceId;
 
     @Column(name = "owner")
     private String owner;
@@ -29,9 +29,8 @@ public class AdvertisementConstruction {
     @Column(name = "date")
     private Date date;
 
-    public AdvertisementConstruction(AdvertisementPlace advertisementPlaceId, String owner, int number,
-                                     String type, String status, Date date) {
-        this.advertisementPlaceId = advertisementPlaceId;
+    public AdvConstruction(AdvPlace advPlaceId, String owner, int number, String type, String status, Date date) {
+        this.advPlaceId = advPlaceId;
         this.owner = owner;
         this.number = number;
         this.type = type;
@@ -39,14 +38,14 @@ public class AdvertisementConstruction {
         this.date = date;
     }
 
-    public AdvertisementConstruction() {}
+    public AdvConstruction() {}
 
-    public AdvertisementPlace getAdvertisementPlaceId() {
-        return advertisementPlaceId;
+    public AdvPlace getAdvPlaceId() {
+        return advPlaceId;
     }
 
-    public void setAdvertisementPlaceId(AdvertisementPlace advertisementPlaceId) {
-        this.advertisementPlaceId = advertisementPlaceId;
+    public void setAdvPlaceId(AdvPlace advPlaceId) {
+        this.advPlaceId = advPlaceId;
     }
 
     public String getOwner() {
@@ -99,9 +98,9 @@ public class AdvertisementConstruction {
 
     @Override
     public String toString() {
-        return "AdvertisementConstruction{" +
+        return "AdvConstruction{" +
                 "id=" + id +
-                ", advertisementPlaceId=" + advertisementPlaceId +
+                ", advPlaceId=" + advPlaceId +
                 ", owner='" + owner + '\'' +
                 ", number=" + number +
                 ", type='" + type + '\'' +
