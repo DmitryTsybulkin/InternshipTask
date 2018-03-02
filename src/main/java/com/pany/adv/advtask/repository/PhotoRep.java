@@ -6,4 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PhotoRep extends JpaRepository<Photo, Long> {
+
+    Photo findByAddress(String address);
+
+    Photo findByRequestId(long request_id);
+
 }

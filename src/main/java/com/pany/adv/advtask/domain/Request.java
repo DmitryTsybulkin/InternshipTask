@@ -13,6 +13,7 @@ public class Request {
     private long id;
 
     @Column(name = "created_on")
+    @Temporal(value = TemporalType.DATE)
     private Date date;
 
     @ManyToOne
@@ -31,6 +32,7 @@ public class Request {
     private User handler; //n:1
 
     @Column(name = "processed_on")
+    @Temporal(value = TemporalType.DATE)
     private Date dateProcessed;
 
     @Column(name = "version")

@@ -12,7 +12,7 @@ public class AdvConstruction {
     private long id;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private AdvPlace advPlaceId;
+    private AdvPlace advPlace;
 
     @Column(name = "owner")
     private String owner;
@@ -29,8 +29,8 @@ public class AdvConstruction {
     @Column(name = "date")
     private Date date;
 
-    public AdvConstruction(AdvPlace advPlaceId, String owner, int number, String type, String status, Date date) {
-        this.advPlaceId = advPlaceId;
+    public AdvConstruction(AdvPlace advPlace, String owner, int number, String type, String status, Date date) {
+        this.advPlace = advPlace;
         this.owner = owner;
         this.number = number;
         this.type = type;
@@ -41,11 +41,11 @@ public class AdvConstruction {
     public AdvConstruction() {}
 
     public AdvPlace getAdvPlaceId() {
-        return advPlaceId;
+        return advPlace;
     }
 
-    public void setAdvPlaceId(AdvPlace advPlaceId) {
-        this.advPlaceId = advPlaceId;
+    public void setAdvPlaceId(AdvPlace advPlace) {
+        this.advPlace = advPlace;
     }
 
     public String getOwner() {
@@ -100,7 +100,7 @@ public class AdvConstruction {
     public String toString() {
         return "AdvConstruction{" +
                 "id=" + id +
-                ", advPlaceId=" + advPlaceId +
+                ", advPlace=" + advPlace +
                 ", owner='" + owner + '\'' +
                 ", number=" + number +
                 ", type='" + type + '\'' +

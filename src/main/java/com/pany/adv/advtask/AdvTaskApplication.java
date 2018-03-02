@@ -1,13 +1,10 @@
 package com.pany.adv.advtask;
 
-import com.pany.adv.advtask.repository.UserRep;
 import com.pany.adv.advtask.service.RequestService;
 import com.pany.adv.advtask.service.MunicipalityService;
-import com.pany.adv.advtask.service.SecurityEncoder;
 import com.pany.adv.advtask.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -21,6 +21,7 @@ public class Archive {
     private AdvConstruction advConstruction;
 
     @Column(name = "created_on")
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     @ManyToOne
@@ -30,6 +31,7 @@ public class Archive {
     private User handler;
 
     @Column(name = "processed_on")
+    @Temporal(TemporalType.DATE)
     private Date dateProcessed;
 
     @Column(name = "version")

@@ -20,6 +20,31 @@ public class MunicipalityService {
         this.municipalityRep = municipalityRep;
     }
 
+    public void createMunicipality(Municipality municipality) {
+        municipalityRep.save(municipality);
+    }
+
+    public List<Municipality> findAll() throws NullPointerException {
+        return municipalityRep.findAll();
+    }
+
+    public Municipality findById(long id) throws NullPointerException {
+        return municipalityRep.findOne(id);
+    }
+
+    public Municipality findByName(String name) throws NullPointerException {
+        return municipalityRep.findByName(name);
+    }
+
+    public void update(long id, String newName) throws NullPointerException {
+        Municipality oldMunicipality = municipalityRep.findOne(id);
+        oldMunicipality.setName(newName);
+    }
+
+    public void delete(long id) {
+        municipalityRep.delete(id);
+    }
+
     // test
     public void insertData() {
         municipalityRep.save(new Municipality("bestMunicipality"));
