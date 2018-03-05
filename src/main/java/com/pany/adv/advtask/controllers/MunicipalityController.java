@@ -21,10 +21,9 @@ public class MunicipalityController {
         this.municipalityRep = municipalityRep;
     }
 
-    @RequestMapping(value = "municipalities", method = RequestMethod.GET)
+    @RequestMapping(value = "/municipalities", method = RequestMethod.GET)
     public List<Municipality> showAll() {
         return municipalityRep.findAll();
     }
-
 
 }

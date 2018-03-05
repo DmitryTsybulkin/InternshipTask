@@ -1,15 +1,16 @@
 package com.pany.adv.advtask.service;
 
-import com.pany.adv.advtask.domain.Municipality;
 import com.pany.adv.advtask.domain.User;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
+import com.pany.adv.advtask.exceptions.ExceptionAPI;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -38,75 +39,28 @@ public class UserService {
     }
 
     public User findById(long id) {
-        return userRep.findOne(id);
-    }
-
-    public User findByLogin(String login) {
-        return userRep.findUserByLogin(login);
-    }
-
-    public User findByName(String name) {
-        return userRep.findByName(name);
-    }
-
-    public User findBySurname(String surname) {
-        return userRep.findBySurname(surname);
-    }
-
-    // is right?
-    public User findByMunicipalityContains(List<Municipality> municipality) {
-        return userRep.findByMunicipalityContains(municipality);
-    }
-
-    public User findByEditorIsTrue() {
-        return userRep.findByEditorIsTrue();
+        User user = userRep.findOne(id);
+        if (user == null) {
+            throw new ExceptionAPI("user with id: " + id + " not found. \n" + HttpStatus.NOT_FOUND.getReasonPhrase() + "\n" + HttpStatus.NOT_FOUND.value());
+        }
+        return user;
     }
 
     public List<User> findAll() {
         return userRep.findAll();
     }
 
+    @Transactional
     public void updateUser(long id, User user) {
-        this.findById(id).setLogin(user.getLogin());
-        this.findById(id).setAdmin(user.isAdmin());
-        this.findById(id).setEditor(user.isEditor());
-        this.findById(id).setMunicipality(user.getMunicipality());
-        this.findById(id).setName(user.getName());
-        this.findById(id).setPassword(user.getPassword());
-        this.findById(id).setPatronymic(user.getPatronymic());
-        this.findById(id).setSurname(user.getSurname());
-    }
-
-    public void updateUserName(long id, String name) {
-        this.findById(id).setName(name);
-    }
-
-    public void updateUserLogin(long id, String login) {
-        this.findById(id).setLogin(login);
-    }
-
-    public void updateUserAdmin(long id, boolean isAdmin) {
-        this.findById(id).setAdmin(isAdmin);
-    }
-    
-    public void updateUserEditor(long id, boolean isEditor) {
-        this.findById(id).setEditor(isEditor);
-    }
-
-    public void updateUserMunicipality(long id, List<Municipality> municipalities) {
-        this.findById(id).setMunicipality(municipalities);
-    }
-
-    public void updateUserPassword(long id, String password) {
-        this.findById(id).setPassword(securityEncoder.passwordEncoder().encode(password));
-    }
-
-    public void updateUserPatronymic(long id, String patronymic) {
-        this.findById(id).setPatronymic(patronymic);
-    }
-
-    public void updateUserSurname(long id, String surname) {
-        this.findById(id).setSurname(surname);
+        User targetUser = findById(id);
+        targetUser.setLogin(user.getLogin());
+        targetUser.setAdmin(user.isAdmin());
+        targetUser.setEditor(user.isEditor());
+        targetUser.setMunicipality(user.getMunicipality());
+        targetUser.setName(user.getName());
+        targetUser.setPassword(user.getPassword());
+        targetUser.setPatronymic(user.getPatronymic());
+        targetUser.setSurname(user.getSurname());
     }
 
     public void deleteUser(long id) {

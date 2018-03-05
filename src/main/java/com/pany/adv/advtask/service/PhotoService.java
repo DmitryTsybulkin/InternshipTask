@@ -1,10 +1,10 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.Photo;
-import com.pany.adv.advtask.domain.Request;
 import com.pany.adv.advtask.repository.PhotoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,25 +31,11 @@ public class PhotoService {
         return photoRep.findAll();
     }
 
-    public Photo findByAddress(String address) {
-        return photoRep.findByAddress(address);
-    }
-
-    public Photo findByRequestId(long request_id) {
-        return photoRep.findByRequestId(request_id);
-    }
-
+    @Transactional
     public void updatePhoto(long id, Photo photo) {
-        this.findById(id).setAddress(photo.getAddress());
-        this.findById(id).setRequest(photo.getRequest());
-    }
-
-    public void updateAddress(long id, String address) {
-        this.findById(id).setAddress(address);
-    }
-
-    public void updateRequest(long id, Request request) {
-        this.findById(id).setRequest(request);
+        Photo targetPhoto = findById(id);
+        targetPhoto.setAddress(photo.getAddress());
+        targetPhoto.setRequest(photo.getRequest());
     }
 
     public void deletePhoto(long id) {

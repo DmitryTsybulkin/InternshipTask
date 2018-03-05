@@ -2,48 +2,84 @@ package com.pany.adv.advtask.dto;
 
 import com.pany.adv.advtask.domain.Municipality;
 import com.pany.adv.advtask.domain.User;
+import com.sun.javafx.scene.layout.region.Margins;
 
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import java.util.List;
 
-public class UserDTO extends User {
+public class UserDTO {
 
-    @Override
-    public long getId() {
-        return super.getId();
+    private long id;
+    private String login;
+    private String name;
+    private String surname;
+    private String patronymic;
+    private List<Municipality> municipalities;
+    private boolean admin;
+    private boolean editor;
+
+    public void setId(long id) {
+        this.id = id;
     }
 
-    @Override
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public void setMunicipalities(List<Municipality> municipalities) {
+        this.municipalities = municipalities;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public void setEditor(boolean editor) {
+        this.editor = editor;
+    }
+
     public String getLogin() {
-        return super.getLogin();
+        return login;
     }
 
-    @Override
     public String getName() {
-        return super.getName();
+        return name;
     }
 
-    @Override
     public String getSurname() {
-        return super.getSurname();
+        return surname;
     }
 
-    @Override
     public String getPatronymic() {
-        return super.getPatronymic();
+        return patronymic;
     }
 
-    @Override
-    public List<Municipality> getMunicipality() {
-        return super.getMunicipality();
+    public long getId() {
+        return id;
     }
 
-    @Override
+    public List<Municipality> getMunicipalities() {
+        return municipalities;
+    }
+
     public boolean isAdmin() {
-        return super.isAdmin();
+        return admin;
     }
 
-    @Override
     public boolean isEditor() {
-        return super.isEditor();
+        return editor;
     }
 }

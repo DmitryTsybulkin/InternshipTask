@@ -5,6 +5,7 @@ import com.pany.adv.advtask.repository.MunicipalityRep;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,19 +25,16 @@ public class MunicipalityService {
         municipalityRep.save(municipality);
     }
 
-    public List<Municipality> findAll() throws NullPointerException {
+    public List<Municipality> findAll() {
         return municipalityRep.findAll();
     }
 
-    public Municipality findById(long id) throws NullPointerException {
+    public Municipality findById(long id) {
         return municipalityRep.findOne(id);
     }
 
-    public Municipality findByName(String name) throws NullPointerException {
-        return municipalityRep.findByName(name);
-    }
-
-    public void update(long id, String newName) throws NullPointerException {
+    @Transactional
+    public void update(long id, String newName) {
         Municipality oldMunicipality = municipalityRep.findOne(id);
         oldMunicipality.setName(newName);
     }
