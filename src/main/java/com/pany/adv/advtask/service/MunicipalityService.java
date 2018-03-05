@@ -35,7 +35,7 @@ public class MunicipalityService {
 
     @Transactional
     public void update(long id, String newName) {
-        Municipality oldMunicipality = municipalityRep.findOne(id);
+        Municipality oldMunicipality = findById(id);
         oldMunicipality.setName(newName);
     }
 

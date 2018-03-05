@@ -2,28 +2,47 @@ package com.pany.adv.advtask.controllers;
 
 import com.pany.adv.advtask.domain.Municipality;
 import com.pany.adv.advtask.repository.MunicipalityRep;
+import com.pany.adv.advtask.service.MunicipalityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/municipality")
 public class MunicipalityController {
 
-    private final MunicipalityRep municipalityRep;
+    private final MunicipalityService municipalityService;
 
     @Autowired
-    public MunicipalityController(MunicipalityRep municipalityRep) {
-        this.municipalityRep = municipalityRep;
+    public MunicipalityController(MunicipalityService municipalityService) {
+        this.municipalityService = municipalityService;
     }
 
-    @RequestMapping(value = "/municipalities", method = RequestMethod.GET)
+    @PostMapping(value = "/municipalities")
+    public Municipality createMunicipality(@RequestBody Municipality municipality) {
+        municipalityService.createMunicipality(municipality);
+        return municipality;
+    }
+
+    @GetMapping(value = "/municipalities")
     public List<Municipality> showAll() {
-        return municipalityRep.findAll();
+        return municipalityService.findAll();
+    }
+
+    @GetMapping(value = "/municipalities/{id}")
+    public Municipality showMunicipality(@PathVariable("id") long id) {
+        return municipalityService.findById(id);
+    }
+
+    @PutMapping(value = "/municipalities/{id}")
+    public Municipality updateMunicipality(@RequestBody Municipality municipality, @RequestParam long id) {
+        municipalityService.update(id, municipality.getName());
+        return municipality;
+    }
+
+    @DeleteMapping(value = "/municipalities/{id}")
+    public void deleteMunicipality(@PathVariable long id) {
+        municipalityService.delete(id);
     }
 
 }

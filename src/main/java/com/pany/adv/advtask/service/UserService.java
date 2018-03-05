@@ -2,7 +2,7 @@ package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.User;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
-import com.pany.adv.advtask.exceptions.ExceptionAPI;
+import com.pany.adv.advtask.exceptions.APIException;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRep;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class UserService {
     public User findById(long id) {
         User user = userRep.findOne(id);
         if (user == null) {
-            throw new ExceptionAPI("user with id: " + id + " not found. \n" + HttpStatus.NOT_FOUND.getReasonPhrase() + "\n" + HttpStatus.NOT_FOUND.value());
+            throw new APIException("user with id: " + id + " not found. \n" + HttpStatus.NOT_FOUND.getReasonPhrase() + "\n" + HttpStatus.NOT_FOUND.value());
         }
         return user;
     }
@@ -75,6 +75,5 @@ public class UserService {
         userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder().
                 encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
                 .withMunicipality(municipalityRep.findAll()).withAdmin(true).withEditor(true).build());
-        log.info("> Done.");
     }
 }
