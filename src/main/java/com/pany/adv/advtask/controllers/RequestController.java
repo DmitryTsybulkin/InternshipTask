@@ -1,11 +1,14 @@
 package com.pany.adv.advtask.controllers;
 
 import com.pany.adv.advtask.domain.Request;
+import com.pany.adv.advtask.dto.RequestDTO;
 import com.pany.adv.advtask.repository.RequestRep;
 import com.pany.adv.advtask.service.RequestService;
+import com.pany.adv.advtask.service.convertors.RequestDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -13,31 +16,39 @@ public class RequestController {
 
     private final RequestService requestService;
 
+    private final RequestDTOConverter converter;
+
     @Autowired
-    public RequestController(RequestService requestService) {
+    public RequestController(RequestService requestService, RequestDTOConverter converter) {
         this.requestService = requestService;
+        this.converter = converter;
     }
 
     @PostMapping(value = "/requests")
-    public Request createRequest(@RequestBody Request request) {
+    public RequestDTO createRequest(@RequestBody Request request) {
         requestService.createRequest(request);
-        return request;
+        return converter.toDto(request);
     }
 
     @GetMapping(value = "/requests")
-    public List<Request> showRequests() {
-        return requestService.findAll();
+    public List<RequestDTO> showRequests() {
+        List<Request> requests = requestService.findAll();
+        List<RequestDTO> requestDTOS = new ArrayList<>();
+        for (Request request : requests) {
+            requestDTOS.add(converter.toDto(request));
+        }
+        return requestDTOS;
     }
 
     @GetMapping(value = "/requests/{id}")
-    public Request showRequest(@PathVariable("id") long id) {
-        return requestService.findById(id);
+    public RequestDTO showRequest(@PathVariable("id") long id) {
+        return converter.toDto(requestService.findById(id));
     }
 
     @PutMapping(value = "/requests/{id}")
-    public Request updateRequest(@RequestBody Request request, @RequestParam long id) {
+    public RequestDTO updateRequest(@RequestBody Request request, @RequestParam long id) {
         requestService.updateRequest(id, request);
-        return request;
+        return converter.toDto(request);
     }
 
     @DeleteMapping(value = "/requests/{id}")

@@ -41,8 +41,7 @@ public class UsersController {
 
     @GetMapping(value = "/users/{id}")
     public UserDTO showUser(@PathVariable("id") long id) {
-        User user = userService.findById(id);
-        return userDtoConverter.toDto(user);
+        return userDtoConverter.toDto(userService.findById(id));
     }
 
     @PutMapping(value = "/users/{id}")

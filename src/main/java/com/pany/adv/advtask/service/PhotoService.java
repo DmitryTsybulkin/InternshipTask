@@ -3,7 +3,6 @@ package com.pany.adv.advtask.service;
 import com.pany.adv.advtask.domain.Photo;
 import com.pany.adv.advtask.domain.Request;
 import com.pany.adv.advtask.exceptions.APIException;
-import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.PhotoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jnlp.FileSaveService;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @Service
