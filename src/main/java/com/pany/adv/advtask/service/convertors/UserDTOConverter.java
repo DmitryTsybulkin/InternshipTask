@@ -10,8 +10,7 @@ public class UserDTOConverter {
     public UserDTO toDto(User user) {
         final UserDTO dto = new UserDTO();
         dto.id = user.getId();
-        dto.admin = user.isAdmin();
-        dto.editor = user.isEditor();
+        dto.role = user.getRole();
         dto.login = user.getLogin();
         dto.municipalities = user.getMunicipality();
         dto.name = user.getName();

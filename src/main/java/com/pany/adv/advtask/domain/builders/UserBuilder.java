@@ -1,6 +1,7 @@
 package com.pany.adv.advtask.domain.builders;
 
 import com.pany.adv.advtask.domain.Municipality;
+import com.pany.adv.advtask.domain.Roles;
 import com.pany.adv.advtask.domain.User;
 
 import java.util.List;
@@ -12,8 +13,7 @@ public final class UserBuilder {
     private String surname;
     private String patronymic;
     private List<Municipality> municipality; // n:m
-    private boolean admin;
-    private boolean editor;
+    private Roles role;
 
     public UserBuilder() {
     }
@@ -52,13 +52,8 @@ public final class UserBuilder {
         return this;
     }
 
-    public UserBuilder withAdmin(boolean admin) {
-        this.admin = admin;
-        return this;
-    }
-
-    public UserBuilder withEditor(boolean editor) {
-        this.editor = editor;
+    public UserBuilder withRole(Roles role) {
+        this.role = role;
         return this;
     }
 
@@ -70,8 +65,7 @@ public final class UserBuilder {
         user.setSurname(surname);
         user.setPatronymic(patronymic);
         user.setMunicipality(municipality);
-        user.setAdmin(admin);
-        user.setEditor(editor);
+        user.setRole(role);
         return user;
     }
 }

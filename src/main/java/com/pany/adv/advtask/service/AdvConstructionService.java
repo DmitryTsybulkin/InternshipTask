@@ -1,6 +1,10 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.AdvConstruction;
+import com.pany.adv.advtask.exceptions.DuplicateEntityException;
+import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
+import com.pany.adv.advtask.exceptions.MissingParametersException;
+import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.AdvConstructionRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,20 +26,40 @@ public class AdvConstructionService {
     //-------------------------------------CRUD-------------------------------------
 
     public void createConstruction(AdvConstruction construction) {
+        if (construction == null) {
+            throw new MissingParametersException();
+        }
+        if (constructionRep.findAll().contains(construction)) {
+            throw new DuplicateEntityException();
+        }
         constructionRep.save(construction);
     }
 
     public AdvConstruction findById(long id) {
-        return constructionRep.findOne(id);
+        AdvConstruction construction = constructionRep.findOne(id);
+        if (construction == null) {
+            throw new ResourceNotFound();
+        }
+        return construction;
     }
 
     public List<AdvConstruction> findAll() {
-        return constructionRep.findAll();
+        List<AdvConstruction> constructions = constructionRep.findAll();
+        if (constructions.isEmpty()) {
+            throw new EntitiesNotFoundException();
+        }
+        return constructions;
     }
 
     @Transactional
     public void updateConstruction(long id, AdvConstruction construction) {
+        if (construction == null) {
+            throw new MissingParametersException();
+        }
         AdvConstruction advConstruction = findById(id);
+        if (advConstruction == null) {
+            throw new ResourceNotFound();
+        }
         advConstruction.setAdvPlaceId(construction.getAdvPlaceId());
         advConstruction.setDate(construction.getDate());
         advConstruction.setNumber(construction.getNumber());
@@ -45,7 +69,11 @@ public class AdvConstructionService {
     }
 
     public void deleteConstruction(long id) {
-        constructionRep.delete(id);
+        AdvConstruction advConstruction = findById(id);
+        if (advConstruction == null) {
+            throw new ResourceNotFound();
+        }
+        constructionRep.delete(advConstruction);
     }
 
     //-----------------------------------JUST_TEST----------------------------------

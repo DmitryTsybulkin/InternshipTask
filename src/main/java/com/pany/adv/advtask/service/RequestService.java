@@ -2,6 +2,10 @@ package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.*;
 import com.pany.adv.advtask.domain.builders.RequestBuilder;
+import com.pany.adv.advtask.exceptions.DuplicateEntityException;
+import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
+import com.pany.adv.advtask.exceptions.MissingParametersException;
+import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +17,7 @@ import java.util.List;
 @Service
 public class RequestService {
 
-    private final RequestRep request;
+    private final RequestRep requestRep;
 
     private final UserRep userRep;
 
@@ -24,8 +28,8 @@ public class RequestService {
     private final PhotoRep photoRep;
 
     @Autowired
-    public RequestService(RequestRep request, UserRep userRep, AdvConstructionRep constructionRep, AdvPlaceRep placeRep, PhotoRep photoRep) {
-        this.request = request;
+    public RequestService(RequestRep requestRep, UserRep userRep, AdvConstructionRep constructionRep, AdvPlaceRep placeRep, PhotoRep photoRep) {
+        this.requestRep = requestRep;
         this.userRep = userRep;
         this.constructionRep = constructionRep;
         this.placeRep = placeRep;
@@ -35,20 +39,40 @@ public class RequestService {
     //-------------------------------------CRUD-------------------------------------
     
     public void createRequest(Request newRequest) {
-        request.save(newRequest);
+        if (newRequest == null) {
+            throw new MissingParametersException();
+        }
+        if (requestRep.findAll().contains(newRequest)) {
+            throw new DuplicateEntityException();
+        }
+        requestRep.save(newRequest);
     }
 
     public Request findById(long id) {
-        return request.findOne(id);
+        Request request = requestRep.findOne(id);
+        if (request == null) {
+            throw new ResourceNotFound();
+        }
+        return request;
     }
 
     public List<Request> findAll() {
-        return request.findAll();
+        List<Request> requests = requestRep.findAll();
+        if (requests.isEmpty()) {
+            throw new EntitiesNotFoundException();
+        }
+        return requests;
     }
 
     @Transactional
     public void updateRequest(long id, Request newRequest) {
+        if (newRequest == null) {
+            throw new MissingParametersException();
+        }
         Request request = findById(id);
+        if (request == null) {
+            throw new ResourceNotFound();
+        }
         request.setActuality(newRequest.getActuality());
         request.setAdvConstruction(newRequest.getAdvConstruction());
         request.setAdvPlace(newRequest.getAdvPlace());
@@ -63,13 +87,17 @@ public class RequestService {
     }
 
     public void deleteRequest(long id) {
-        request.delete(id);
+        Request request = requestRep.findOne(id);
+        if (request == null) {
+            throw new ResourceNotFound();
+        }
+        requestRep.delete(request);
     }
     
     //-------------------------------------JUST_TEST-------------------------------------
 
     public void insertData() {
-        request.save(new RequestBuilder().withDate(new Date()).withApplicant(userRep.findOne(1L)).
+        requestRep.save(new RequestBuilder().withDate(new Date()).withApplicant(userRep.findOne(1L)).
                 withStatus("BestStatus").withAdvPlace(placeRep.findOne(1L)).
                 withAdvConstruction(constructionRep.findOne(1L)).withHandler(userRep.findOne(1L)).
                 withDateProcessed(new Date()).withVersion("1.1").withReason("kek").withActuality("best").

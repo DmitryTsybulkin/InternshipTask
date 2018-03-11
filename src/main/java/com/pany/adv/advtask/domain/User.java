@@ -15,7 +15,7 @@ public class User {
     private String login;
 
     @Column(name = "password")
-    private String password;  // will hashcode-password
+    private String password;
 
     @Column(name = "name")
     private String name;
@@ -31,11 +31,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "municipality_id"))
     private List<Municipality> municipality; // n:m
 
-    @Column(name = "is_admin")
-    private boolean admin;
-
-    @Column(name = "is_editor")
-    private boolean editor;
+    @Enumerated(value = EnumType.STRING)
+    private Roles role;
 
     public User() {}
 
@@ -87,28 +84,20 @@ public class User {
         this.patronymic = patronymic;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isEditor() {
-        return editor;
-    }
-
-    public void setEditor(boolean editor) {
-        this.editor = editor;
-    }
-
     public List<Municipality> getMunicipality() {
         return municipality;
     }
 
     public void setMunicipality(List<Municipality> municipality) {
         this.municipality = municipality;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
     }
 
     public String toString() {

@@ -1,6 +1,10 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.Municipality;
+import com.pany.adv.advtask.exceptions.DuplicateEntityException;
+import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
+import com.pany.adv.advtask.exceptions.MissingParametersException;
+import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +16,6 @@ import java.util.List;
 @Service
 public class MunicipalityService {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MunicipalityService.class);
-
     private final MunicipalityRep municipalityRep;
 
     @Autowired
@@ -22,25 +24,49 @@ public class MunicipalityService {
     }
 
     public void createMunicipality(Municipality municipality) {
+        if (municipality == null) {
+            throw new MissingParametersException();
+        }
+        if (municipalityRep.findAll().contains(municipality)) {
+            throw new DuplicateEntityException();
+        }
         municipalityRep.save(municipality);
     }
 
     public List<Municipality> findAll() {
-        return municipalityRep.findAll();
+        List<Municipality> municipalities = municipalityRep.findAll();
+        if (municipalities.isEmpty()) {
+            throw new EntitiesNotFoundException();
+        }
+        return municipalities;
     }
 
     public Municipality findById(long id) {
-        return municipalityRep.findOne(id);
+        Municipality municipality = municipalityRep.findOne(id);
+        if (municipality == null) {
+            throw new ResourceNotFound();
+        }
+        return municipality;
     }
 
     @Transactional
     public void update(long id, String newName) {
+        if (newName == null) {
+            throw new MissingParametersException();
+        }
         Municipality oldMunicipality = findById(id);
+        if (oldMunicipality == null) {
+            throw new ResourceNotFound();
+        }
         oldMunicipality.setName(newName);
     }
 
     public void delete(long id) {
-        municipalityRep.delete(id);
+        Municipality municipality = municipalityRep.findOne(id);
+        if (municipality == null) {
+            throw new ResourceNotFound();
+        }
+        municipalityRep.delete(municipality);
     }
 
     // test

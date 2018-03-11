@@ -1,8 +1,9 @@
 package com.pany.adv.advtask.service;
 
+import com.pany.adv.advtask.domain.Roles;
 import com.pany.adv.advtask.domain.User;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
-import com.pany.adv.advtask.exceptions.APIException;
+import com.pany.adv.advtask.exceptions.*;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRep;
 import org.slf4j.Logger;
@@ -35,36 +36,55 @@ public class UserService {
     //---------------------------------------CRUD----------------------------------------
 
     public void createUser(User user) {
+        if (user == null) {
+            throw new MissingParametersException();
+        }
+        if (userRep.findAll().contains(user)) {
+            throw new DuplicateEntityException();
+        }
         userRep.save(user);
     }
 
     public User findById(long id) {
         User user = userRep.findOne(id);
         if (user == null) {
-            throw new APIException("user with id: " + id + " not found. \n" + HttpStatus.NOT_FOUND.getReasonPhrase() + "\n" + HttpStatus.NOT_FOUND.value());
+            throw new ResourceNotFound();
         }
         return user;
     }
 
     public List<User> findAll() {
-        return userRep.findAll();
+        List<User> users = userRep.findAll();
+        if (users.isEmpty()) {
+            throw new EntitiesNotFoundException();
+        }
+        return users;
     }
 
     @Transactional
     public void updateUser(long id, User user) {
+        if (user == null) {
+            throw new MissingParametersException();
+        }
         User targetUser = findById(id);
+        if (targetUser == null) {
+            throw new ResourceNotFound();
+        }
         targetUser.setLogin(user.getLogin());
-        targetUser.setAdmin(user.isAdmin());
-        targetUser.setEditor(user.isEditor());
         targetUser.setMunicipality(user.getMunicipality());
         targetUser.setName(user.getName());
         targetUser.setPassword(user.getPassword());
         targetUser.setPatronymic(user.getPatronymic());
         targetUser.setSurname(user.getSurname());
+        targetUser.setRole(user.getRole());
     }
 
     public void deleteUser(long id) {
-        userRep.delete(id);
+        User user = userRep.findOne(id);
+        if (user == null) {
+            throw new ResourceNotFound();
+        }
+        userRep.delete(user);
     }
 
     //-------------------------------------JUST_TEST-------------------------------------
@@ -74,6 +94,6 @@ public class UserService {
         String password = "epicPassword";
         userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder().
                 encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
-                .withMunicipality(municipalityRep.findAll()).withAdmin(true).withEditor(true).build());
+                .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
     }
 }

@@ -4,6 +4,8 @@ import com.pany.adv.advtask.domain.Photo;
 import com.pany.adv.advtask.domain.Request;
 import com.pany.adv.advtask.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,8 +32,9 @@ public class PhotoController {
         return service.findAll();
     }
 
+    //get image file on frontend by absolute address
     @GetMapping(value = "/photos/{id}")
-    public Photo showPhoto(@PathVariable("id") long id) {
+    public Photo showPhoto(@PathVariable("id") long id) throws IOException {
         return service.findById(id);
     }
 

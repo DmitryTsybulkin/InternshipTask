@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
@@ -25,6 +26,20 @@ public class FileSaver {
 
     public boolean deleteFile(String fileAddress) throws IOException {
         return Files.deleteIfExists(Paths.get(fileAddress));
+    }
+
+    public boolean isExists(String name) {
+        return Files.exists(Paths.get(path + name), LinkOption.NOFOLLOW_LINKS);
+    }
+
+    public boolean isImage(MultipartFile file) {
+        String mimeType = file.getContentType();
+        String type = mimeType.split("/")[0];
+        return type.equals("image");
+    }
+
+    public byte[] getImage(String address) throws IOException {
+        return Files.readAllBytes(Paths.get(address));
     }
 
 }
