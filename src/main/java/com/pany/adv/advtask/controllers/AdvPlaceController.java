@@ -1,10 +1,13 @@
 package com.pany.adv.advtask.controllers;
 
 import com.pany.adv.advtask.domain.AdvPlace;
+import com.pany.adv.advtask.dto.AdvPlaceDTO;
 import com.pany.adv.advtask.service.AdvPlaceService;
+import com.pany.adv.advtask.service.convertors.AdvPlaceDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -12,31 +15,39 @@ public class AdvPlaceController {
 
     private final AdvPlaceService service;
 
+    private final AdvPlaceDTOConverter converter;
+
     @Autowired
-    public AdvPlaceController(AdvPlaceService service) {
+    public AdvPlaceController(AdvPlaceService service, AdvPlaceDTOConverter converter) {
         this.service = service;
+        this.converter = converter;
     }
 
     @PostMapping(value = "/places")
-    public AdvPlace createPlace(@RequestBody AdvPlace place) {
+    public AdvPlaceDTO createPlace(@RequestBody AdvPlace place) {
         service.createPlace(place);
-        return place;
+        return converter.toDto(place);
     }
 
     @GetMapping(value = "/places")
-    public List<AdvPlace> showPlaces() {
-        return service.findAll();
+    public List<AdvPlaceDTO> showPlaces() {
+        List<AdvPlace> places = service.findAll();
+        List<AdvPlaceDTO> placeDTOS = new ArrayList<>();
+        for (AdvPlace place : places) {
+            placeDTOS.add(converter.toDto(place));
+        }
+        return placeDTOS;
     }
 
     @GetMapping(value = "/places/{id}")
-    public AdvPlace showPlace(@PathVariable("id") long id) {
-        return service.findById(id);
+    public AdvPlaceDTO showPlace(@PathVariable("id") long id) {
+        return converter.toDto(service.findById(id));
     }
 
     @PutMapping(value = "/places/{id}")
-    public AdvPlace updatePlace(@RequestBody AdvPlace place, @RequestParam long id) {
+    public AdvPlaceDTO updatePlace(@RequestBody AdvPlace place, @RequestParam long id) {
         service.updateAdvPlace(id, place);
-        return place;
+        return converter.toDto(place);
     }
 
     @DeleteMapping(value = "/places/{id}")

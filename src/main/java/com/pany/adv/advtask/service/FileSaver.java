@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 
 @Service
 public class FileSaver {
@@ -19,8 +20,17 @@ public class FileSaver {
 
     public String store(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
+
+        Date date = new Date();
+        String todayLong = String.valueOf(date.getTime());
+        StringBuilder today = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            today.append(todayLong.charAt(i));
+        }
+        today.append(fileName);
+        
         InputStream stream = file.getInputStream();
-        Files.copy(stream, Paths.get(path + fileName), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(stream, Paths.get(path + today), StandardCopyOption.REPLACE_EXISTING);
         return path + fileName;
     }
 
@@ -34,8 +44,7 @@ public class FileSaver {
 
     public boolean isImage(MultipartFile file) {
         String mimeType = file.getContentType();
-        String type = mimeType.split("/")[0];
-        return type.equals("image");
+        return mimeType.startsWith("image");
     }
 
     public byte[] getImage(String address) throws IOException {

@@ -88,7 +88,7 @@ public class UserTest {
 //    @Test
 //    public void createUserFailedBecauseUserIsExists() throws Exception {
 //        User newUser = new UserBuilder().withLogin(user.getLogin()).withRole(user.getRole())
-//                .withMunicipality(user.getMunicipality()).withName(user.getName()).withPassword(user.getPassword())
+//                .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword(user.getPassword())
 //                .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
 //
 //        newUser.setId(user.getId());

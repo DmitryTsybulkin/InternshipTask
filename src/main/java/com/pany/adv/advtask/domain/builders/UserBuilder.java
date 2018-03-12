@@ -64,7 +64,7 @@ public final class UserBuilder {
         user.setName(name);
         user.setSurname(surname);
         user.setPatronymic(patronymic);
-        user.setMunicipality(municipality);
+        user.setMunicipalities(municipality);
         user.setRole(role);
         return user;
     }

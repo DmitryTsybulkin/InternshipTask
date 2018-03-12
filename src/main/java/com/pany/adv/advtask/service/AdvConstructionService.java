@@ -29,9 +29,6 @@ public class AdvConstructionService {
         if (construction == null) {
             throw new MissingParametersException();
         }
-        if (constructionRep.findAll().contains(construction)) {
-            throw new DuplicateEntityException();
-        }
         constructionRep.save(construction);
     }
 

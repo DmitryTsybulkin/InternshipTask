@@ -9,7 +9,6 @@ import com.pany.adv.advtask.repository.UserRep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -39,7 +38,7 @@ public class UserService {
         if (user == null) {
             throw new MissingParametersException();
         }
-        if (userRep.findAll().contains(user)) {
+        if (userRep.findByLogin(user.getLogin())) {
             throw new DuplicateEntityException();
         }
         userRep.save(user);
@@ -71,7 +70,7 @@ public class UserService {
             throw new ResourceNotFound();
         }
         targetUser.setLogin(user.getLogin());
-        targetUser.setMunicipality(user.getMunicipality());
+        targetUser.setMunicipalities(user.getMunicipalities());
         targetUser.setName(user.getName());
         targetUser.setPassword(user.getPassword());
         targetUser.setPatronymic(user.getPatronymic());

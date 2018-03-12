@@ -1,10 +1,13 @@
 package com.pany.adv.advtask.controllers;
 
 import com.pany.adv.advtask.domain.AdvConstruction;
+import com.pany.adv.advtask.dto.AdvConstructionDTO;
 import com.pany.adv.advtask.service.AdvConstructionService;
+import com.pany.adv.advtask.service.convertors.AdvConstructionDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -12,31 +15,39 @@ public class AdvConstructionController {
 
     private final AdvConstructionService service;
 
+    private final AdvConstructionDTOConverter converter;
+
     @Autowired
-    public AdvConstructionController(AdvConstructionService service) {
+    public AdvConstructionController(AdvConstructionService service, AdvConstructionDTOConverter converter) {
         this.service = service;
+        this.converter = converter;
     }
 
     @PostMapping(value = "/constructions")
-    public AdvConstruction createConstruction(@RequestBody AdvConstruction construction) {
+    public AdvConstructionDTO createConstruction(@RequestBody AdvConstruction construction) {
         service.createConstruction(construction);
-        return construction;
+        return converter.toDto(construction);
     }
 
     @GetMapping(value = "/constructions")
-    public List<AdvConstruction> showConstructions() {
-        return service.findAll();
+    public List<AdvConstructionDTO> showConstructions() {
+        List<AdvConstruction> constructions = service.findAll();
+        List<AdvConstructionDTO> advConstructionDTOS = new ArrayList<>();
+        for (AdvConstruction construction : constructions) {
+            advConstructionDTOS.add(converter.toDto(construction));
+        }
+        return advConstructionDTOS;
     }
 
     @GetMapping(value = "/constructions/{id}")
-    public AdvConstruction showConstruction(@PathVariable("id") long id) {
-        return service.findById(id);
+    public AdvConstructionDTO showConstruction(@PathVariable("id") long id) {
+        return converter.toDto(service.findById(id));
     }
 
     @PutMapping(value = "/constructions/{id}")
-    public AdvConstruction updateConstruction(@RequestBody AdvConstruction construction, @RequestParam long id) {
+    public AdvConstructionDTO updateConstruction(@RequestBody AdvConstruction construction, @RequestParam long id) {
         service.updateConstruction(id, construction);
-        return construction;
+        return converter.toDto(construction);
     }
 
     @DeleteMapping(value = "/constructions/{id}")

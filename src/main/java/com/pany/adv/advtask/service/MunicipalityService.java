@@ -27,7 +27,7 @@ public class MunicipalityService {
         if (municipality == null) {
             throw new MissingParametersException();
         }
-        if (municipalityRep.findAll().contains(municipality)) {
+        if (municipalityRep.findByName(municipality.getName())) {
             throw new DuplicateEntityException();
         }
         municipalityRep.save(municipality);

@@ -1,8 +1,9 @@
 package com.pany.adv.advtask.controllers;
 
 import com.pany.adv.advtask.domain.Municipality;
-import com.pany.adv.advtask.repository.MunicipalityRep;
+import com.pany.adv.advtask.dto.MunicipalityDTO;
 import com.pany.adv.advtask.service.MunicipalityService;
+import com.pany.adv.advtask.service.convertors.MunicipalityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,31 +14,34 @@ public class MunicipalityController {
 
     private final MunicipalityService municipalityService;
 
+    private final MunicipalityDTOConverter converter;
+
     @Autowired
-    public MunicipalityController(MunicipalityService municipalityService) {
+    public MunicipalityController(MunicipalityService municipalityService, MunicipalityDTOConverter converter) {
         this.municipalityService = municipalityService;
+        this.converter = converter;
     }
 
     @PostMapping(value = "/municipalities")
-    public Municipality createMunicipality(@RequestBody Municipality municipality) {
+    public MunicipalityDTO createMunicipality(@RequestBody Municipality municipality) {
         municipalityService.createMunicipality(municipality);
-        return municipality;
+        return converter.toDto(municipality);
     }
 
     @GetMapping(value = "/municipalities")
-    public List<Municipality> showAll() {
-        return municipalityService.findAll();
+    public List<MunicipalityDTO> showAll() {
+        return converter.toDtoList(municipalityService.findAll());
     }
 
     @GetMapping(value = "/municipalities/{id}")
-    public Municipality showMunicipality(@PathVariable("id") long id) {
-        return municipalityService.findById(id);
+    public MunicipalityDTO showMunicipality(@PathVariable("id") long id) {
+        return converter.toDto(municipalityService.findById(id));
     }
 
     @PutMapping(value = "/municipalities/{id}")
-    public Municipality updateMunicipality(@RequestBody Municipality municipality, @RequestParam long id) {
+    public MunicipalityDTO updateMunicipality(@RequestBody Municipality municipality, @RequestParam long id) {
         municipalityService.update(id, municipality.getName());
-        return municipality;
+        return converter.toDto(municipality);
     }
 
     @DeleteMapping(value = "/municipalities/{id}")

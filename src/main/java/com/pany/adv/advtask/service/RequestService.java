@@ -42,9 +42,6 @@ public class RequestService {
         if (newRequest == null) {
             throw new MissingParametersException();
         }
-        if (requestRep.findAll().contains(newRequest)) {
-            throw new DuplicateEntityException();
-        }
         requestRep.save(newRequest);
     }
 

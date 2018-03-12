@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdvPlaceRep extends JpaRepository<AdvPlace, Long> {
+    boolean findByAddress(String address);
 }

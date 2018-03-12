@@ -29,9 +29,6 @@ public class ArchiveService {
         if (archive == null) {
             throw new MissingParametersException();
         }
-        if (archiveRep.findAll().contains(archive)) {
-            throw new DuplicateEntityException();
-        }
         archiveRep.save(archive);
     }
 

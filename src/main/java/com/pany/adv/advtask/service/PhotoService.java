@@ -10,14 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -25,12 +19,15 @@ public class PhotoService {
 
     private final PhotoRep photoRep;
 
+    private final FileSaver fileSaver;
+
     @Value("${upload.path}")
     String path;
 
     @Autowired
-    public PhotoService(PhotoRep photoRep) {
+    public PhotoService(PhotoRep photoRep, FileSaver fileSaver) {
         this.photoRep = photoRep;
+        this.fileSaver = fileSaver;
     }
 
     public Photo createPhoto(MultipartFile file, Request requestId) throws IOException {
@@ -50,7 +47,7 @@ public class PhotoService {
             throw new DuplicateFileException();
         }
 
-        if (photoRep.findAll().contains(new Photo(requestId, path + file.getOriginalFilename()))) {
+        if (photoRep.findByAddress(path + file.getOriginalFilename())) {
             throw new DuplicateEntityException();
         }
 
@@ -88,8 +85,6 @@ public class PhotoService {
         if (targetPhoto == null) {
             throw new ResourceNotFound();
         }
-
-        final FileSaver fileSaver = new FileSaver();
 
         //check in front that file is required
         if (!file.isEmpty()) {

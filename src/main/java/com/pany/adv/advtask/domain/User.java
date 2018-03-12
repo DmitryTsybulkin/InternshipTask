@@ -84,11 +84,11 @@ public class User {
         this.patronymic = patronymic;
     }
 
-    public List<Municipality> getMunicipality() {
+    public List<Municipality> getMunicipalities() {
         return municipality;
     }
 
-    public void setMunicipality(List<Municipality> municipality) {
+    public void setMunicipalities(List<Municipality> municipality) {
         this.municipality = municipality;
     }
 
