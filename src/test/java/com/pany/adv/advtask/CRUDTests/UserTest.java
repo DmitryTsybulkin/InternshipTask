@@ -19,7 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
@@ -63,11 +65,12 @@ public class UserTest {
         municipalities.add(municipalityRep.save(new Municipality("municipalityN2")));
 
         user = userRep.save(new UserBuilder().withLogin("login").withName("Name").withPassword("Password").withSurname("surname")
-        .withRole(Roles.ADMIN).withMunicipality(municipalities).withPatronymic("patron").build());
+                .withRole(Roles.ADMIN).withMunicipality(municipalities).withPatronymic("patron").build());
     }
 
     @Test
     public void createUser() throws Exception {
+        userRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(user)))
@@ -79,26 +82,22 @@ public class UserTest {
     @Test
     public void createUserFailedBecauseMissParameter() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("bad_info"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("bad_info"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    // TODO: 11.03.2018 test that entity is duplicate + update user
-//    @Test
-//    public void createUserFailedBecauseUserIsExists() throws Exception {
-//        User newUser = new UserBuilder().withLogin(user.getLogin()).withRole(user.getRole())
-//                .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword(user.getPassword())
-//                .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
-//
-//        newUser.setId(user.getId());
-//        assertEquals(user, newUser);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/users")
-//        .contentType(MediaType.APPLICATION_JSON_UTF8)
-//        .content(asJsonString(newUser)))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//    }
+    @Test
+    public void createUserFailedBecauseUserIsExists() throws Exception {
+        User newUser = new UserBuilder().withLogin(user.getLogin()).withRole(user.getRole())
+                .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword(user.getPassword())
+                .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(newUser)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 
     @Test
     public void usersIsOk() throws Exception {
@@ -118,6 +117,51 @@ public class UserTest {
     @Test
     public void userNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/users/" + 2))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void updateUser() throws Exception {
+        User newUser = new UserBuilder().withLogin("NewLogin").withRole(user.getRole())
+                .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword("NewPassword")
+                .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
+
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(newUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(newUser))));
+    }
+
+    @Test
+    public void badUpdateUserBecauseMissParameter() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("bad_info"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void badUpdateUserBecauseUserNotExists() throws Exception {
+        User newUser = new UserBuilder().withLogin("NewLogin").withRole(user.getRole())
+                .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword("NewPassword")
+                .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
+
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + 2)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(newUser)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void deleteUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + user.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + user.getId()))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 

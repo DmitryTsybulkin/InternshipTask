@@ -38,7 +38,7 @@ public class UserService {
         if (user == null) {
             throw new MissingParametersException();
         }
-        if (userRep.findByLogin(user.getLogin())) {
+        if (userRep.countUsersByLogin(user.getLogin()) > 0) {
             throw new DuplicateEntityException();
         }
         userRep.save(user);
@@ -64,6 +64,9 @@ public class UserService {
     public void updateUser(long id, User user) {
         if (user == null) {
             throw new MissingParametersException();
+        }
+        if (userRep.countUsersByLogin(user.getLogin()) > 0) {
+            throw new DuplicateLoginException();
         }
         User targetUser = findById(id);
         if (targetUser == null) {

@@ -45,7 +45,7 @@ public class UsersController {
     }
 
     @PutMapping(value = "/users/{id}")
-    public UserDTO updateUser(@RequestBody User user, @RequestParam long id) {
+    public UserDTO updateUser(@PathVariable long id, @RequestBody User user) {
         userService.updateUser(id, user);
         return userDtoConverter.toDto(user);
     }

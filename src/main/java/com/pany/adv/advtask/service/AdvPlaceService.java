@@ -29,7 +29,7 @@ public class AdvPlaceService {
         if (place == null) {
             throw new MissingParametersException();
         }
-        if (placeRep.findByAddress(place.getAddress())) {
+        if (placeRep.countAdvPlacesByAddress(place.getAddress()) > 0) {
             throw new DuplicateEntityException();
         }
         placeRep.save(place);

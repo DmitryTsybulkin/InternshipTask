@@ -47,7 +47,7 @@ public class PhotoService {
             throw new DuplicateFileException();
         }
 
-        if (photoRep.findByAddress(path + file.getOriginalFilename())) {
+        if (photoRep.countPhotosByAddress(path + file.getOriginalFilename()) > 0) {
             throw new DuplicateEntityException();
         }
 

@@ -121,6 +121,15 @@ public class MainExceptions {
         return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DuplicateLoginException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionDTO> exceptionDuplicateLogin() {
+        APIException exception = new APIException();
+        exception.setErrorCode(HttpStatus.BAD_REQUEST.value());
+        exception.setErrorMessage("User with such login already exists.");
+        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
+    }
+
     // unauthorized
 
     @ExceptionHandler(UnauthrorizedException.class)
