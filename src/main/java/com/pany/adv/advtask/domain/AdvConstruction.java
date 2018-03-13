@@ -27,6 +27,7 @@ public class AdvConstruction {
     private String status;
 
     @Column(name = "date")
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     public AdvConstruction(AdvPlace advPlace, String owner, int number, String type, String status, Date date) {

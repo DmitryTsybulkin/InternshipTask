@@ -7,6 +7,7 @@ import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.repository.*;
 import com.pany.adv.advtask.service.convertors.PhotoDTOConverter;
+import com.pany.adv.advtask.service.convertors.RequestDTOConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,9 @@ public class PhotoTest {
     private PhotoDTOConverter converter;
 
     @Autowired
+    private RequestDTOConverter requestDTOConverter;
+
+    @Autowired
     private AdvPlaceRep placeRep;
 
     @Autowired
@@ -87,6 +91,7 @@ public class PhotoTest {
 
     @Before
     public void setup() throws Exception {
+        photoRep.deleteAllInBatch();
         requestRep.deleteAllInBatch();
         constructionRep.deleteAllInBatch();
         placeRep.deleteAllInBatch();
@@ -113,9 +118,9 @@ public class PhotoTest {
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
         .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-                //.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                //.andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
     }
 
     @Test
@@ -130,7 +135,7 @@ public class PhotoTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.content().json(asJsonString(photo)));
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
     }
 
 }
