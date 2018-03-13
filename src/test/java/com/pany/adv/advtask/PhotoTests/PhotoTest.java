@@ -40,10 +40,10 @@ public class PhotoTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private MockMultipartFile file = new MockMultipartFile("image", "simple_image_data_bytes".getBytes());
-
     @Value("${upload.path}")
     String path;
+
+    private MockMultipartFile file = new MockMultipartFile("file", path + "file", MediaType.IMAGE_JPEG.getType(), "labadabadabda".getBytes());
 
     private Photo photo;
 
@@ -61,9 +61,6 @@ public class PhotoTest {
 
     @Autowired
     private PhotoDTOConverter converter;
-
-    @Autowired
-    private RequestDTOConverter requestDTOConverter;
 
     @Autowired
     private AdvPlaceRep placeRep;
@@ -107,7 +104,6 @@ public class PhotoTest {
         constructionRep.save(construction);
         requestRep.save(request);
 
-
         photo = photoRep.save(new Photo(request, path + file.getOriginalFilename()));
     }
 
@@ -115,7 +111,7 @@ public class PhotoTest {
     @Test
     public void createPhoto() throws Exception {
         photoRep.deleteAllInBatch();
-
+        photo.setId(3);
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
         .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())

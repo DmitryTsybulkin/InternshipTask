@@ -11,12 +11,9 @@ import java.util.List;
 @Service
 public class PhotoDTOConverter {
 
-    private RequestDTOConverter converter;
-
     public PhotoDTO toDto(Photo photo) {
         final PhotoDTO dto = new PhotoDTO();
         dto.id = photo.getId();
-        dto.requestDTO = converter.toDto(photo.getRequest());
         dto.address = photo.getAddress();
         return dto;
     }
@@ -29,8 +26,4 @@ public class PhotoDTOConverter {
         return photoDTOS;
     }
 
-    @Autowired
-    public void setConverter(RequestDTOConverter converter) {
-        this.converter = converter;
-    }
 }
