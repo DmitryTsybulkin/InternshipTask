@@ -35,7 +35,6 @@ import static com.pany.adv.advtask.service.JsonFormatter.asJsonString;
 @SpringBootTest(classes = AdvTaskApplication.class)
 @WebAppConfiguration
 @AutoConfigureMockMvc
-@Component
 public class UserTest {
 
     @Autowired
