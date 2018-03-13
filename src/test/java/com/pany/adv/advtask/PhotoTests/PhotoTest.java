@@ -5,10 +5,8 @@ import com.pany.adv.advtask.AdvTaskApplication;
 import com.pany.adv.advtask.domain.*;
 import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
-import com.pany.adv.advtask.repository.MunicipalityRep;
-import com.pany.adv.advtask.repository.PhotoRep;
-import com.pany.adv.advtask.repository.RequestRep;
-import com.pany.adv.advtask.repository.UserRep;
+import com.pany.adv.advtask.repository.*;
+import com.pany.adv.advtask.service.convertors.PhotoDTOConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +58,15 @@ public class PhotoTest {
     @Autowired
     private MunicipalityRep municipalityRep;
 
+    @Autowired
+    private PhotoDTOConverter converter;
+
+    @Autowired
+    private AdvPlaceRep placeRep;
+
+    @Autowired
+    private AdvConstructionRep constructionRep;
+
     private Municipality municipality = new Municipality("municipality");
 
     private List<Municipality> municipalities = new ArrayList<>();
@@ -81,20 +88,49 @@ public class PhotoTest {
     @Before
     public void setup() throws Exception {
         requestRep.deleteAllInBatch();
+        constructionRep.deleteAllInBatch();
+        placeRep.deleteAllInBatch();
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
 
         municipalities.add(municipality);
 
-        //photo = photoRep.save(new Photo(request, path + file.getOriginalFilename()));
+        municipalityRep.save(municipality);
+        userRep.save(applicant);
+        userRep.save(handler);
+        placeRep.save(place);
+        constructionRep.save(construction);
+        requestRep.save(request);
+
+
+        photo = photoRep.save(new Photo(request, path + file.getOriginalFilename()));
     }
 
     // bad request???
     @Test
     public void createPhoto() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
-//        .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
+        photoRep.deleteAllInBatch();
+
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
+        .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                //.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                //.andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
+    }
+
+    @Test
+    public void photosIsOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
+    @Test
+    public void photoIsOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(photo)));
     }
 
 }
