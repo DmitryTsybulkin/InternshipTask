@@ -1,6 +1,8 @@
 package com.pany.adv.advtask.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,24 +15,20 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 @Service
+//@PropertySources(value = {@PropertySource("classpath:application.properties")})
+//@PropertySource(value = "classpath:application.properties")
 public class FileSaver {
 
     @Value("${upload.path}")
-    String path;
+    private String path = "C:/MyPrograms/Files/";
 
     public String store(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
 
-        Date date = new Date();
-        String todayLong = String.valueOf(date.getTime());
-        StringBuilder today = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
-            today.append(todayLong.charAt(i));
-        }
-        today.append(fileName);
+        String.format("%d_%s", System.currentTimeMillis(), fileName);
 
         InputStream stream = file.getInputStream();
-        Files.copy(stream, Paths.get(path + today), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(stream, Paths.get(path + fileName), StandardCopyOption.REPLACE_EXISTING);
         return path + fileName;
     }
 

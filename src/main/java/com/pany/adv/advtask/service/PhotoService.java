@@ -80,7 +80,6 @@ public class PhotoService {
     public Photo updatePhoto(long id, MultipartFile file, Request requestId) throws IOException {
 
         Photo targetPhoto = findById(id);
-        boolean deleted = false;
 
         if (targetPhoto == null) {
             throw new ResourceNotFound();
@@ -88,11 +87,7 @@ public class PhotoService {
 
         //check in front that file is required
         if (!file.isEmpty()) {
-            deleted = fileSaver.deleteFile(targetPhoto.getAddress());
-        }
-
-        if (!deleted) {
-            throw new FileNotFoundException();
+            fileSaver.deleteFile(targetPhoto.getAddress());
         }
 
         String address = fileSaver.store(file);

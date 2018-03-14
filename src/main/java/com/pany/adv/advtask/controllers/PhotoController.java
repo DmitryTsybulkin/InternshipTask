@@ -6,6 +6,7 @@ import com.pany.adv.advtask.dto.PhotoDTO;
 import com.pany.adv.advtask.service.PhotoService;
 import com.pany.adv.advtask.service.convertors.PhotoDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,8 @@ public class PhotoController {
     }
 
     @PostMapping(value = "/photos")
-    public PhotoDTO createPhoto(@RequestParam MultipartFile file, @RequestBody Request request) throws IOException {
+    public PhotoDTO createPhoto(@RequestParam(required = false) MultipartFile file,
+                                @RequestBody Request request) throws IOException {
         Photo photo = service.createPhoto(file, request);
         return converter.toDto(photo);
     }
@@ -43,7 +45,8 @@ public class PhotoController {
     }
 
     @PutMapping(value = "/photos/{id}")
-    public PhotoDTO updatePhoto(@RequestParam long id, @RequestParam MultipartFile file, @RequestParam Request requestId) throws IOException {
+    public PhotoDTO updatePhoto(@PathVariable long id, @RequestParam(required = false) MultipartFile file,
+                                @RequestBody(required = false) Request requestId) throws IOException {
         Photo photo = service.updatePhoto(id, file, requestId);
         return converter.toDto(photo);
     }

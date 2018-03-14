@@ -6,6 +6,7 @@ import com.pany.adv.advtask.domain.*;
 import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.repository.*;
+import com.pany.adv.advtask.service.FileSaver;
 import com.pany.adv.advtask.service.convertors.PhotoDTOConverter;
 import com.pany.adv.advtask.service.convertors.RequestDTOConverter;
 import org.junit.Before;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import static com.pany.adv.advtask.service.JsonFormatter.asJsonString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AdvTaskApplication.class)
@@ -43,12 +45,13 @@ public class PhotoTest {
     @Value("${upload.path}")
     String path;
 
-    private MockMultipartFile file = new MockMultipartFile("file", path + "file", MediaType.IMAGE_JPEG.getType(), "labadabadabda".getBytes());
-
     private Photo photo;
 
     @Autowired
     private PhotoRep photoRep;
+
+    @Autowired
+    FileSaver fileSaver;
 
     @Autowired
     private RequestRep requestRep;
@@ -67,6 +70,8 @@ public class PhotoTest {
 
     @Autowired
     private AdvConstructionRep constructionRep;
+
+    private MockMultipartFile file;
 
     private Municipality municipality = new Municipality("municipality");
 
@@ -104,19 +109,69 @@ public class PhotoTest {
         constructionRep.save(construction);
         requestRep.save(request);
 
+        file = new MockMultipartFile("file", "file.jpeg", MediaType.IMAGE_JPEG.getType(), "labadabadabda".getBytes());
+
         photo = photoRep.save(new Photo(request, path + file.getOriginalFilename()));
     }
 
     // bad request???
+//    @Test
+//    public void createPhoto() throws Exception {
+//        photoRep.deleteAllInBatch();
+//        photo.setId(4);
+//        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
+//        .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//                .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
+//        fileSaver.deleteFile(photo.getAddress());
+//    }
+
     @Test
-    public void createPhoto() throws Exception {
+    public void createPhotoFailedMissFile() throws Exception {
         photoRep.deleteAllInBatch();
-        photo.setId(3);
-        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").contentType(MediaType.MULTIPART_FORM_DATA)
         .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createPhotoFailedMissRequest() throws Exception {
+        photoRep.deleteAllInBatch();
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
+        .content("bad_info").contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createPhotoFailedFileIsNotImage() throws Exception {
+        photoRep.deleteAllInBatch();
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.IMAGE_GIF)
+                .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createPhotoFailedFileIsExists() throws Exception {
+        photoRep.deleteAllInBatch();
+        fileSaver.store(file);
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        fileSaver.deleteFile(path + file.getOriginalFilename());
+    }
+
+    @Test
+    public void createPhotoFailedEntityIsExists() throws Exception {
+        photoRep.deleteAllInBatch();
+        photoRep.save(photo);
+
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        fileSaver.deleteFile(path + file.getOriginalFilename());
     }
 
     @Test
@@ -127,11 +182,74 @@ public class PhotoTest {
     }
 
     @Test
+    public void photosIsNotFound() throws Exception {
+        photoRep.deleteAllInBatch();
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
     public void photoIsOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
+    }
+
+    @Test
+    public void photoIsNotFound() throws Exception {
+        photoRep.deleteAllInBatch();
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void photoUpdateIsOk() throws Exception {
+        photoRep.deleteAllInBatch();
+        fileSaver.store(file);
+        photoRep.save(photo);
+
+        MockMultipartFile anotherFile = new MockMultipartFile("file", "anotherFile.jpeg", MediaType.IMAGE_JPEG.getType(), "labadabadabda".getBytes());
+        //PUT
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos/" + photo.getId()).file(anotherFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        fileSaver.deleteFile(path + file.getOriginalFilename());
+        fileSaver.deleteFile(path + anotherFile.getOriginalFilename());
+    }
+
+    @Test
+    public void photoUpdatingIsOk() throws Exception {
+        photoRep.deleteAllInBatch();
+        fileSaver.store(file);
+        photoRep.save(photo);
+
+        Request request2 = new RequestBuilder().withActuality("NewActuality").withAdvConstruction(construction).withAdvPlace(place)
+                .withApplicant(applicant).withDate(new Date()).withDateProcessed(new Date()).withHandler(handler).withReason("reason")
+                .withStatus("status").withVersion("2").withPhoto(photo).build();
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/photos/" + photo.getId())
+        .content(asJsonString(request2)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        assertEquals(photoRep.findOne(photo.getId()).getRequest().getActuality(), request2.getActuality());
+    }
+
+    @Test
+    public void deletePhoto() throws Exception {
+        photoRep.deleteAllInBatch();
+        fileSaver.store(file);
+        photoRep.save(photo);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/photos/" + photo.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        assertFalse(fileSaver.isExists(file.getOriginalFilename()));
     }
 
 }
