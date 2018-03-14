@@ -44,11 +44,9 @@ public class PhotoController {
         return converter.toDto(service.findById(id));
     }
 
-    @PutMapping(value = "/photos/{id}")
-    public PhotoDTO updatePhoto(@PathVariable long id, @RequestParam(required = false) MultipartFile file,
-                                @RequestBody(required = false) Request requestId) throws IOException {
-        Photo photo = service.updatePhoto(id, file, requestId);
-        return converter.toDto(photo);
+    @GetMapping(value = "/photos/{id}/file")
+    public byte[] getPhoto(@PathVariable("id") long id) throws IOException {
+        return service.getPhoto(id);
     }
 
     @DeleteMapping(value = "/photos/{id}")

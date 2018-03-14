@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @RestControllerAdvice
 public class MainExceptions {
@@ -127,6 +128,15 @@ public class MainExceptions {
         APIException exception = new APIException();
         exception.setErrorCode(HttpStatus.BAD_REQUEST.value());
         exception.setErrorMessage("User with such login already exists.");
+        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionDTO> ioException() {
+        APIException exception = new APIException();
+        exception.setErrorCode(HttpStatus.BAD_REQUEST.value());
+        exception.setErrorMessage("Input or output error.");
         return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
     }
 

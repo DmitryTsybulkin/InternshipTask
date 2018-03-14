@@ -13,12 +13,12 @@ public class Photo {
     @OneToOne
     private Request request;
 
-    @Column(name = "file_address")
-    private String address;
+    @Column(name = "file_name")
+    private String fileName;
 
-    public Photo(Request request, String address) {
+    public Photo(Request request, String fileName) {
         this.request = request;
-        this.address = address;
+        this.fileName = fileName;
     }
 
     public Photo() {}
@@ -39,12 +39,12 @@ public class Photo {
         this.request = request;
     }
 
-    public String getAddress() {
-        return address;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Photo {
         return "Photo{" +
                 "id=" + id +
                 ", request=" + request +
-                ", address='" + address + '\'' +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
 }

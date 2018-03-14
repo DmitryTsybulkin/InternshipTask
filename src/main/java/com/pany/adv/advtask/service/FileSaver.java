@@ -15,25 +15,23 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 @Service
-//@PropertySources(value = {@PropertySource("classpath:application.properties")})
-//@PropertySource(value = "classpath:application.properties")
 public class FileSaver {
 
     @Value("${upload.path}")
-    private String path = "C:/MyPrograms/Files/";
+    private String path;
 
     public String store(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
 
-        String.format("%d_%s", System.currentTimeMillis(), fileName);
+        fileName = String.format("%d_%s", System.currentTimeMillis(), fileName);
 
         InputStream stream = file.getInputStream();
         Files.copy(stream, Paths.get(path + fileName), StandardCopyOption.REPLACE_EXISTING);
-        return path + fileName;
+        return fileName;
     }
 
-    public boolean deleteFile(String fileAddress) throws IOException {
-        return Files.deleteIfExists(Paths.get(fileAddress));
+    public boolean deleteFile(String fileName) throws IOException {
+        return Files.deleteIfExists(Paths.get(path + fileName));
     }
 
     public boolean isExists(String name) {
@@ -45,8 +43,8 @@ public class FileSaver {
         return mimeType.startsWith("image");
     }
 
-    public byte[] getImage(String address) throws IOException {
-        return Files.readAllBytes(Paths.get(address));
+    public byte[] getImage(String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(path + fileName));
     }
 
 }

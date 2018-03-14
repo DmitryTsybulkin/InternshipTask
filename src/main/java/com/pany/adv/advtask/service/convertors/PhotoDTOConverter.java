@@ -2,7 +2,6 @@ package com.pany.adv.advtask.service.convertors;
 
 import com.pany.adv.advtask.domain.Photo;
 import com.pany.adv.advtask.dto.PhotoDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class PhotoDTOConverter {
     public PhotoDTO toDto(Photo photo) {
         final PhotoDTO dto = new PhotoDTO();
         dto.id = photo.getId();
-        dto.address = photo.getAddress();
+        dto.fileName = photo.getFileName();
         return dto;
     }
 

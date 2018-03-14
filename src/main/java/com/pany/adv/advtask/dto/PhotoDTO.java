@@ -3,6 +3,6 @@ package com.pany.adv.advtask.dto;
 public class PhotoDTO {
 
     public long id;
-    public String address;
+    public String fileName;
 
 }

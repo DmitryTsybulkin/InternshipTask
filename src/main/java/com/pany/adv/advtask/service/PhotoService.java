@@ -7,7 +7,6 @@ import com.pany.adv.advtask.repository.PhotoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
@@ -31,13 +30,11 @@ public class PhotoService {
     }
 
     public Photo createPhoto(MultipartFile file, Request requestId) throws IOException {
-        String url;
+        String fileName;
 
         if (file.isEmpty() || requestId == null) {
             throw new MissingParametersException();
         }
-
-        final FileSaver fileSaver = new FileSaver();
 
         if (!fileSaver.isImage(file)) {
             throw new FileNotImageException();
@@ -47,12 +44,12 @@ public class PhotoService {
             throw new DuplicateFileException();
         }
 
-        if (photoRep.countPhotosByAddress(path + file.getOriginalFilename()) > 0) {
+        if (photoRep.countPhotosByFileName(file.getOriginalFilename()) > 0) {
             throw new DuplicateEntityException();
         }
 
-        url = fileSaver.store(file);
-        Photo photo = new Photo(requestId, url);
+        fileName = fileSaver.store(file);
+        Photo photo = new Photo(requestId, fileName);
         photoRep.save(photo);
         return photo;
     }
@@ -76,26 +73,6 @@ public class PhotoService {
     // TODO: 08.03.2018 get photo-file (frontend by address?)
     // TODO: 09.03.2018 check that all parameters is exists: frontend.
 
-    @Transactional
-    public Photo updatePhoto(long id, MultipartFile file, Request requestId) throws IOException {
-
-        Photo targetPhoto = findById(id);
-
-        if (targetPhoto == null) {
-            throw new ResourceNotFound();
-        }
-
-        //check in front that file is required
-        if (!file.isEmpty()) {
-            fileSaver.deleteFile(targetPhoto.getAddress());
-        }
-
-        String address = fileSaver.store(file);
-        targetPhoto.setRequest(requestId);
-        targetPhoto.setAddress(address);
-        return targetPhoto;
-    }
-
     public void deletePhoto(long id) throws IOException {
 
         boolean deleted;
@@ -105,9 +82,7 @@ public class PhotoService {
             throw new ResourceNotFound();
         }
 
-        final FileSaver fileSaver = new FileSaver();
-
-        deleted = fileSaver.deleteFile(targetPhoto.getAddress());
+        deleted = fileSaver.deleteFile(targetPhoto.getFileName());
 
         if (!deleted) {
             throw new FileNotFoundException();
@@ -115,6 +90,10 @@ public class PhotoService {
 
         photoRep.delete(targetPhoto);
 
+    }
+
+    public byte[] getPhoto(long id) throws IOException {
+        return fileSaver.getImage(findById(id).getFileName());
     }
 
 }
