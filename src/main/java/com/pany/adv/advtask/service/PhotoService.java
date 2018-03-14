@@ -84,7 +84,7 @@ public class PhotoService {
 
         deleted = fileSaver.deleteFile(targetPhoto.getFileName());
 
-        if (!deleted) {
+        if (deleted == false) {
             throw new FileNotFoundException();
         }
 

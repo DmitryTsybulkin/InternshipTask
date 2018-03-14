@@ -27,7 +27,7 @@ public class PhotoController {
     }
 
     @PostMapping(value = "/photos")
-    public PhotoDTO createPhoto(@RequestParam(required = false) MultipartFile file,
+    public PhotoDTO createPhoto(@RequestParam MultipartFile file,
                                 @RequestBody Request request) throws IOException {
         Photo photo = service.createPhoto(file, request);
         return converter.toDto(photo);
