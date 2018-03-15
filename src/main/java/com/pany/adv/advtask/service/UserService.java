@@ -95,8 +95,12 @@ public class UserService {
     public void insertData() {
         log.info("> Inserting data...");
         String password = "epicPassword";
-        userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder().
-                encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
+        userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder()
+                .encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
                 .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
+
+        userRep.save(new UserBuilder().withLogin("login").withPassword(securityEncoder.passwordEncoder()
+        .encode("password")).withName("name").withSurname("sur").withPatronymic("patron")
+        .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
     }
 }

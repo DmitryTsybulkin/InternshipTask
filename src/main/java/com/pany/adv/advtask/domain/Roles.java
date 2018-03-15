@@ -1,9 +1,16 @@
 package com.pany.adv.advtask.domain;
 
-public enum Roles {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Roles implements GrantedAuthority {
 
     USER,
     EDITOR,
-    ADMIN
+    ADMIN;
 
+
+    @Override
+    public String getAuthority() {
+        return this.name();
+    }
 }
