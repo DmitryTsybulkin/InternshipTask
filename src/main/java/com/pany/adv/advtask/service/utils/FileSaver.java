@@ -1,4 +1,4 @@
-package com.pany.adv.advtask.service;
+package com.pany.adv.advtask.service.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

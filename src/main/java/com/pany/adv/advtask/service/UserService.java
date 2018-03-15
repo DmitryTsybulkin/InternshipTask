@@ -6,6 +6,7 @@ import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.exceptions.*;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRep;
+import com.pany.adv.advtask.service.security.SecurityEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

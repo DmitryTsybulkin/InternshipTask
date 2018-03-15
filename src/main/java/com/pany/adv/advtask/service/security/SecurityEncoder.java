@@ -1,4 +1,4 @@
-package com.pany.adv.advtask.service;
+package com.pany.adv.advtask.service.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -1,4 +1,4 @@
-package com.pany.adv.advtask.service;
+package com.pany.adv.advtask.service.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;

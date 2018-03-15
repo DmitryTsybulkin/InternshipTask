@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRep extends JpaRepository<User, Long> {
     long countUsersByLogin(String login);
+    User findUserByLogin(String login);
 }
