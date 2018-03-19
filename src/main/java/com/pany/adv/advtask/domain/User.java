@@ -100,10 +100,16 @@ public class User {
         this.role = role;
     }
 
+    @Override
     public String toString() {
-        return "* User Entry(" + "id: " + id + "login: " + login + "password: " +
-                password + "name: " + name + "surname: " +
-                surname + "patronymic: " + patronymic + "municipality: " + ").";
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", patronymic='" + patronymic + '\'' +
+                ", role=" + role +
+                '}';
     }
-
 }

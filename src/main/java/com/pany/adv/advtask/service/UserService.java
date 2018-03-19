@@ -94,13 +94,16 @@ public class UserService {
 
     public void insertData() {
         log.info("> Inserting data...");
-        String password = "epicPassword";
-        userRep.save(new UserBuilder().withLogin("BestLogin").withPassword(securityEncoder.passwordEncoder()
-                .encode(password)).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
-                .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
+        userRep.save(new UserBuilder().withLogin("edit").withPassword(securityEncoder.passwordEncoder()
+                .encode("edit")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
+                .withMunicipality(municipalityRep.findAll()).withRole(Roles.EDITOR).build());
 
-        userRep.save(new UserBuilder().withLogin("login").withPassword(securityEncoder.passwordEncoder()
-        .encode("password")).withName("name").withSurname("sur").withPatronymic("patron")
-        .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
+        userRep.save(new UserBuilder().withLogin("user").withPassword(securityEncoder.passwordEncoder()
+                .encode("user")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
+                .withMunicipality(municipalityRep.findAll()).withRole(Roles.USER).build());
+
+        userRep.save(new UserBuilder().withLogin("admin").withPassword(securityEncoder.passwordEncoder()
+                .encode("admin")).withName("name").withSurname("sur").withPatronymic("patron")
+                .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
     }
 }

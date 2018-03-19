@@ -16,16 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.security.Security;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.pany.adv.advtask.service.utils.JsonFormatter.asJsonString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 
 @RunWith(SpringRunner.class)
@@ -45,6 +51,9 @@ public class UserTest {
     private UserRep userRep;
 
     @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
     private RequestRep requestRep;
 
     @Autowired
@@ -55,6 +64,7 @@ public class UserTest {
 
     @Before
     public void setup() throws Exception {
+
         requestRep.deleteAllInBatch();
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
@@ -62,7 +72,7 @@ public class UserTest {
         municipalities.add(municipalityRep.save(new Municipality("municipalityN1")));
         municipalities.add(municipalityRep.save(new Municipality("municipalityN2")));
 
-        user = userRep.save(new UserBuilder().withLogin("login").withName("Name").withPassword("Password").withSurname("surname")
+        user = userRep.save(new UserBuilder().withLogin("admin").withName("Name").withPassword("admin").withSurname("surname")
                 .withRole(Roles.ADMIN).withMunicipality(municipalities).withPatronymic("patron").build());
     }
 
@@ -70,6 +80,7 @@ public class UserTest {
     public void createUser() throws Exception {
         userRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -80,6 +91,7 @@ public class UserTest {
     @Test
     public void createUserFailedBecauseMissParameter() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content("bad_info"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -92,6 +104,7 @@ public class UserTest {
                 .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUser)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -99,14 +112,16 @@ public class UserTest {
 
     @Test
     public void usersIsOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users")).
-                andExpect(MockMvcResultMatchers.status().isOk()).
-                andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform(MockMvcRequestBuilders.get("/users")
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void userIsOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + user.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + user.getId())
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(user))));
@@ -114,7 +129,8 @@ public class UserTest {
 
     @Test
     public void userNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + 2))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + 2)
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -126,6 +142,7 @@ public class UserTest {
 
 
         mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUser)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -136,6 +153,7 @@ public class UserTest {
     @Test
     public void badUpdateUserBecauseMissParameter() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content("bad_info"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -149,6 +167,7 @@ public class UserTest {
 
 
         mockMvc.perform(MockMvcRequestBuilders.put("/users/" + 2)
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUser)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -156,11 +175,25 @@ public class UserTest {
 
     @Test
     public void deleteUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + user.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + user.getId())
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + user.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + user.getId())
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void accessDeniedToUsers() throws Exception {
+            User simpleUser = userRep.save(new UserBuilder().withLogin("user").withName("user")
+                    .withPassword("user").withSurname("surname").withRole(Roles.USER)
+                    .withMunicipality(municipalities).withPatronymic("patron").build());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users")
+                .with(user(simpleUser.getLogin()).password(simpleUser.getPassword()).roles(simpleUser.getRole().name())
+                        .authorities(simpleUser.getRole())))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
 }

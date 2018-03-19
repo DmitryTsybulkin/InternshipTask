@@ -1,7 +1,6 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.AdvConstruction;
-import com.pany.adv.advtask.exceptions.DuplicateEntityException;
 import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,9 +18,12 @@ public class AdvConstructionService {
     private final
     AdvConstructionRep constructionRep;
 
+    private final AdvPlaceService advPlaceService;
+
     @Autowired
-    public AdvConstructionService(AdvConstructionRep constructionRep) {
+    public AdvConstructionService(AdvConstructionRep constructionRep, AdvPlaceService advPlaceService) {
         this.constructionRep = constructionRep;
+        this.advPlaceService = advPlaceService;
     }
 
     //-------------------------------------CRUD-------------------------------------
@@ -74,5 +77,10 @@ public class AdvConstructionService {
     }
 
     //-----------------------------------JUST_TEST----------------------------------
+
+    public void insertData() {
+        constructionRep.save(new AdvConstruction(advPlaceService.findById(1L), "owner", 1, "type",
+                "status", new Date()));
+    }
 
 }

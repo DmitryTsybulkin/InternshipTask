@@ -1,48 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <!--<link rel = "stylesheet" type="text/css" href = "" /> -->
     <title>Users</title>
-    <style>
-        table, tr, th {
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
 </head>
 <body>
 <header><h1>mega kek</h1></header>
 <div class = "container">
-    <div class="table-users">
-        <table>
+    <link href="/logout" />
+    <div class="table-responsive">
+        <table class="table" id="users">
             <thead>
                 <tr>
                     <th>id</th>
                     <th>login</th>
-                    <th>password</th>
                     <th>name</th>
                     <th>surname</th>
                     <th>patronymic</th>
+                    <th>municipalities</th>
                     <th>role</th>
-                    <th>admin</th>
-                    <th>editor</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr th:each="user : ${users}">
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.login}"></td>
-                    <td th:text="${user.password}"></td>
-                    <td th:text="${user.name}"></td>
-                    <td th:text="${user.surname}"></td>
-                    <td th:text="${user.patronymic}"></td>
-                    <td th:text="${user.role}"></td>
-                    <td th:text="${user.admin}"></td>
-                    <td th:text="${user.editor}"></td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
+<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/scripts.js"></script>
+<script>
+    $.ajax({
+        type: "GET",
+        dataType: "jsonp",
+        url: "http://localhost:8080/users",
+        data: data,
+        success: {
+            var items = '';
+            $.each(data, function (key, val) {
+                items += "<tr>";
+                items += "<td id='" + key + "'>" + val.id + "</td>";
+                items += "<td id='" + key + "'>" + val.login + "</td>";
+                items += "<td id='" + key + "'>" + val.name + "</td>";
+                items += "<td id='" + key + "'>" + val.surname + "</td>";
+                items += "<td id='" + key + "'>" + val.patronymic + "</td>";
+                items += "<td id='" + key + "'>" + val.municipalities + "</td>";
+                items += "<td id='" + key + "'>" + val.role + "</td>";
+                items += "</tr>";
+            });
+            $('#users').append(items);
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 package com.pany.adv.advtask;
 
-import com.pany.adv.advtask.service.RequestService;
-import com.pany.adv.advtask.service.MunicipalityService;
-import com.pany.adv.advtask.service.UserService;
+import com.pany.adv.advtask.service.*;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,15 +20,23 @@ public class AdvTaskApplication {
 	}
 
 	@Bean
-	CommandLineRunner start(UserService userService, RequestService requestService, MunicipalityService municipalityService) {
+	CommandLineRunner start(UserService userService, RequestService requestService, MunicipalityService municipalityService,
+							AdvPlaceService advPlaceService, AdvConstructionService advConstructionService,
+							PhotoService photoService) {
 		return args -> {
 			log.info("@@ Inserting Data...");
 			municipalityService.insertData();
-			requestService.insertData();
+			advPlaceService.insertData();
+			advConstructionService.insertData();
 			userService.insertData();
 			requestService.insertData();
-			log.info("@@ findAll() call...");
-			userService.findAll().forEach(user -> log.info(user.toString()));
+			photoService.insertData();
+			log.info("@@ Ready.");
 		};
+	}
+
+	@Bean
+	public KieContainer kieContainer() {
+		return KieServices.Factory.get().getKieClasspathContainer();
 	}
 }

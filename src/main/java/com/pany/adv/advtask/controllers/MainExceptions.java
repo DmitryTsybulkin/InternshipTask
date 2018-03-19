@@ -8,6 +8,8 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +59,17 @@ public class MainExceptions {
     }
 
     // bad request
+
+    // TODO: 18.03.2018 how to handle???
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ExceptionDTO> exceptionForbidden() {
+        APIException exception = new APIException();
+        exception.setErrorCode(HttpStatus.FORBIDDEN.value());
+        exception.setErrorMessage("Access denied.");
+        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(MissingParametersException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

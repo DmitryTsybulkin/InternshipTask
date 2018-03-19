@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
-public class UserModel implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private List<Roles> roles;
     private String password;
@@ -15,10 +15,10 @@ public class UserModel implements UserDetails {
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
 
-    public UserModel() {}
+    public UserDetailsImpl() {}
 
-    public UserModel(List<Roles> roles, String password, String username, boolean isAccountNonExpired,
-                     boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
+    public UserDetailsImpl(List<Roles> roles, String password, String username, boolean isAccountNonExpired,
+                           boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
         this.roles = roles;
         this.password = password;
         this.username = username;

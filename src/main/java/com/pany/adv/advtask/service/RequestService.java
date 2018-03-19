@@ -2,11 +2,12 @@ package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.*;
 import com.pany.adv.advtask.domain.builders.RequestBuilder;
-import com.pany.adv.advtask.exceptions.DuplicateEntityException;
 import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.*;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +28,16 @@ public class RequestService {
 
     private final PhotoRep photoRep;
 
+    private final KieContainer kieContainer;
+
     @Autowired
-    public RequestService(RequestRep requestRep, UserRep userRep, AdvConstructionRep constructionRep, AdvPlaceRep placeRep, PhotoRep photoRep) {
+    public RequestService(RequestRep requestRep, UserRep userRep, AdvConstructionRep constructionRep, AdvPlaceRep placeRep, PhotoRep photoRep, KieContainer kieContainer) {
         this.requestRep = requestRep;
         this.userRep = userRep;
         this.constructionRep = constructionRep;
         this.placeRep = placeRep;
         this.photoRep = photoRep;
+        this.kieContainer = kieContainer;
     }
     
     //-------------------------------------CRUD-------------------------------------
@@ -42,6 +46,10 @@ public class RequestService {
         if (newRequest == null) {
             throw new MissingParametersException();
         }
+        KieSession kieSession = kieContainer.newKieSession("rulesSession");
+        kieSession.insert(newRequest);
+        kieSession.fireAllRules();
+        kieSession.dispose();
         requestRep.save(newRequest);
     }
 

@@ -21,13 +21,16 @@ public class PhotoService {
 
     private final FileSaver fileSaver;
 
+    private final RequestService requestService;
+
     @Value("${upload.path}")
     String path;
 
     @Autowired
-    public PhotoService(PhotoRep photoRep, FileSaver fileSaver) {
+    public PhotoService(PhotoRep photoRep, FileSaver fileSaver, RequestService requestService) {
         this.photoRep = photoRep;
         this.fileSaver = fileSaver;
+        this.requestService = requestService;
     }
 
     public Photo createPhoto(MultipartFile file, Request requestId) throws IOException {
@@ -85,7 +88,7 @@ public class PhotoService {
 
         deleted = fileSaver.deleteFile(targetPhoto.getFileName());
 
-        if (deleted == false) {
+        if (!deleted) {
             throw new FileNotFoundException();
         }
 
@@ -95,6 +98,12 @@ public class PhotoService {
 
     public byte[] getPhoto(long id) throws IOException {
         return fileSaver.getImage(findById(id).getFileName());
+    }
+
+    //-------------------------------------JUST_TEST-------------------------------------
+
+    public void insertData() {
+        photoRep.save(new Photo(requestService.findById(1L), "name"));
     }
 
 }

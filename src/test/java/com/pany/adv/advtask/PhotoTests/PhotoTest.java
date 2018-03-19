@@ -33,6 +33,7 @@ import static com.pany.adv.advtask.service.utils.JsonFormatter.asJsonString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AdvTaskApplication.class)
@@ -74,15 +75,15 @@ public class PhotoTest {
 
     private MockMultipartFile file;
 
-    private Municipality municipality = new Municipality("municipality");
+    private Municipality municipality = new Municipality();
 
     private List<Municipality> municipalities = new ArrayList<>();
 
-    private User applicant = new UserBuilder().withLogin("login").withName("Name").withPassword("Password").withSurname("surname")
-            .withRole(Roles.ADMIN).withMunicipality(municipalities).withPatronymic("patron").build();
+    private User applicant;
 
-    private User handler = new UserBuilder().withLogin("login").withName("Name").withPassword("Password").withSurname("surname")
-            .withRole(Roles.EDITOR).withMunicipality(municipalities).withPatronymic("patron").build();
+    private User admin;
+
+    private User handler;
 
     private AdvPlace place = new AdvPlace("owner", "address", municipality);
 
@@ -104,8 +105,12 @@ public class PhotoTest {
         municipalities.add(municipality);
 
         municipalityRep.save(municipality);
-        userRep.save(applicant);
-        userRep.save(handler);
+        applicant = userRep.save(new UserBuilder().withLogin("user").withName("Name").withPassword("user").withSurname("surname")
+                .withRole(Roles.USER).withMunicipality(municipalities).withPatronymic("patron").build());
+        admin = userRep.save(new UserBuilder().withLogin("admin").withName("Name").withPassword("admin").withSurname("surname")
+                .withRole(Roles.ADMIN).withMunicipality(municipalities).withPatronymic("patron").build());
+        handler = userRep.save(new UserBuilder().withLogin("edit").withName("Name").withPassword("edit").withSurname("surname")
+                .withRole(Roles.EDITOR).withMunicipality(municipalities).withPatronymic("patron").build());
         placeRep.save(place);
         constructionRep.save(construction);
         requestRep.save(request);
@@ -119,7 +124,8 @@ public class PhotoTest {
     public void createPhoto() throws Exception {
         photoRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
-        .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
+        .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("id", Matchers.notNullValue()))
@@ -133,7 +139,9 @@ public class PhotoTest {
     public void createPhotoFailedMissFile() throws Exception {
         photoRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.post("/photos")
-        .content(asJsonString(request)).contentType(MediaType.MULTIPART_FORM_DATA))
+                .with(user(admin.getLogin()).password(admin.getPassword())
+                        .roles(admin.getRole().name()).authorities(admin.getRole()))
+                .content(asJsonString(request)).contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -142,7 +150,8 @@ public class PhotoTest {
         photoRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos")
                 .file(file).contentType(MediaType.MULTIPART_FORM_DATA)
-        .content("bad_info").contentType(MediaType.APPLICATION_JSON_UTF8))
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole()))
+                .content("bad_info").contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -152,6 +161,8 @@ public class PhotoTest {
         photoRep.deleteAllInBatch();
                 mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos")
                         .file(file1).contentType(MediaType.APPLICATION_PDF_VALUE)
+                        .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name())
+                                .authorities(admin.getRole()))
                 .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -163,6 +174,7 @@ public class PhotoTest {
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole()))
                 .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
         fileSaver.deleteFile(file.getOriginalFilename());
@@ -170,7 +182,8 @@ public class PhotoTest {
 
     @Test
     public void photosIsOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos")
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
@@ -178,13 +191,15 @@ public class PhotoTest {
     @Test
     public void photosIsNotFound() throws Exception {
         photoRep.deleteAllInBatch();
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos")
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     public void photoIsOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId())
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(photo))));
@@ -193,7 +208,8 @@ public class PhotoTest {
     @Test
     public void photoIsNotFound() throws Exception {
         photoRep.deleteAllInBatch();
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId())
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -207,10 +223,12 @@ public class PhotoTest {
         Photo photo1 = new Photo(request, fullName);
         photoRep.save(photo1);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/photos/" + photo1.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/photos/" + photo1.getId())
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo1.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo1.getId())
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         assertFalse(fileSaver.isExists(fullName));
