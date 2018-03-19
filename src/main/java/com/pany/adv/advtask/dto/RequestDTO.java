@@ -21,7 +21,7 @@ public class RequestDTO {
     public String handler;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z")
     public Date dateProcessed;
-    public String version;
+    public int version;
     public String reason;
     public String actuality;
     public PhotoDTO photo;

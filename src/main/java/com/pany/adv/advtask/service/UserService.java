@@ -46,11 +46,7 @@ public class UserService {
     }
 
     public User findById(long id) {
-        User user = userRep.findOne(id);
-        if (user == null) {
-            throw new ResourceNotFound();
-        }
-        return user;
+        return userRep.findUserById(id).orElseThrow(ResourceNotFound::new);
     }
 
     public List<User> findAll() {
@@ -70,9 +66,6 @@ public class UserService {
             throw new DuplicateLoginException();
         }
         User targetUser = findById(id);
-        if (targetUser == null) {
-            throw new ResourceNotFound();
-        }
         targetUser.setLogin(user.getLogin());
         targetUser.setMunicipalities(user.getMunicipalities());
         targetUser.setName(user.getName());
@@ -83,10 +76,7 @@ public class UserService {
     }
 
     public void deleteUser(long id) {
-        User user = userRep.findOne(id);
-        if (user == null) {
-            throw new ResourceNotFound();
-        }
+        User user = userRep.findUserById(id).orElseThrow(ResourceNotFound::new);
         userRep.delete(user);
     }
 

@@ -15,7 +15,7 @@ public class ArchiveDTO {
     public String applicant;
     public String handler;
     public Date dateProcessed;
-    public String version;
+    public int version;
     public String reason;
     public String actuality;
 

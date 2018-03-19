@@ -12,7 +12,7 @@ public final class ArchiveBuilder {
     private User applicant;
     private User handler;
     private Date dateProcessed;
-    private String version;
+    private int version;
     private String reason;
     private String actuality;
 
@@ -58,7 +58,7 @@ public final class ArchiveBuilder {
         return this;
     }
 
-    public ArchiveBuilder withVersion(String version) {
+    public ArchiveBuilder withVersion(int version) {
         this.version = version;
         return this;
     }

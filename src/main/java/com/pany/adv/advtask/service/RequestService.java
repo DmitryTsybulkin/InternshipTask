@@ -89,6 +89,11 @@ public class RequestService {
         request.setStatus(newRequest.getStatus());
         request.setVersion(newRequest.getVersion());
         request.setPhoto(newRequest.getPhoto());
+
+        KieSession kieSession = kieContainer.newKieSession("rulesSession");
+        kieSession.insert(newRequest);
+        kieSession.fireAllRules();
+        kieSession.dispose();
     }
 
     public void deleteRequest(long id) {
@@ -105,7 +110,7 @@ public class RequestService {
         requestRep.save(new RequestBuilder().withDate(new Date()).withApplicant(userRep.findOne(1L)).
                 withStatus("BestStatus").withAdvPlace(placeRep.findOne(1L)).
                 withAdvConstruction(constructionRep.findOne(1L)).withHandler(userRep.findOne(1L)).
-                withDateProcessed(new Date()).withVersion("1.1").withReason("kek").withActuality("best").
+                withDateProcessed(new Date()).withVersion(1).withReason("kek").withActuality("best").
                 withPhoto(photoRep.findOne(1L)).build());
     }
 }

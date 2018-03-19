@@ -36,7 +36,7 @@ public class Request {
     private Date dateProcessed;
 
     @Column(name = "version")
-    private String version;
+    private int version;
 
     @Column(name = "reason")
     private String reason;
@@ -115,11 +115,11 @@ public class Request {
         this.dateProcessed = dateProcessed;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

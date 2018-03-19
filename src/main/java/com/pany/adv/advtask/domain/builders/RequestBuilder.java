@@ -12,7 +12,7 @@ public final class RequestBuilder {
     private AdvConstruction advConstruction; //1:1 by id
     private User handler; //n:1
     private Date dateProcessed;
-    private String version;
+    private int version;
     private String reason;
     private String actuality;
     private Photo photo;
@@ -59,7 +59,7 @@ public final class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder withVersion(String version) {
+    public RequestBuilder withVersion(int version) {
         this.version = version;
         return this;
     }
