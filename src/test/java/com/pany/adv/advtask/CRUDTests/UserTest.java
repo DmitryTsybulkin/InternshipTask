@@ -88,12 +88,12 @@ public class UserTest {
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(user))));
     }
 
+    //bad
     @Test
     public void createUserFailedBecauseMissParameter() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("bad_info"))
+        userRep.deleteAllInBatch();
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/")
+                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -150,6 +150,7 @@ public class UserTest {
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(newUser))));
     }
 
+    //bad
     @Test
     public void badUpdateUserBecauseMissParameter() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())

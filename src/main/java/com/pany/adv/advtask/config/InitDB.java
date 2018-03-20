@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 @Component
-@Profile(value = "dev, prod")
+@Profile(value = {"prod"})
 public class InitDB {
 
-    private final
-    AdvConstructionRep constructionRep;
+    private final AdvConstructionRep constructionRep;
 
     private final AdvPlaceRep advPlaceRep;
 
@@ -44,6 +44,11 @@ public class InitDB {
         this.requestRep = requestRep;
         this.userRep = userRep;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @PostConstruct
+    private void init() {
+        insertData();
     }
 
     public void insertData() {

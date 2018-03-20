@@ -148,19 +148,6 @@ public class MainExceptions {
         return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
     }
 
-    // unauthorized
-
-    @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ExceptionDTO> exceptionUnauthorized() {
-        APIException exception = new APIException();
-        exception.setErrorCode(HttpStatus.UNAUTHORIZED.value());
-        exception.setErrorMessage("User is not unauthorized");
-        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.UNAUTHORIZED);
-    }
-
-    //??????
-
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public ResponseEntity<ExceptionDTO> exceptionUnsupportedType() {
