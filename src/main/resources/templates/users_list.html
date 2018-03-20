@@ -23,7 +23,10 @@
                     <th>role</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <td id="ident"></td>
+                <td id="login"></td>
+            </tbody>
         </table>
     </div>
 </div>
@@ -31,27 +34,27 @@
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="/static/scripts.js"></script>
 <script>
-    $.ajax({
-        type: "GET",
-        dataType: "jsonp",
-        url: "http://localhost:8080/users",
-        data: data,
-        success: {
-            var items = '';
-            $.each(data, function (key, val) {
-                items += "<tr>";
-                items += "<td id='" + key + "'>" + val.id + "</td>";
-                items += "<td id='" + key + "'>" + val.login + "</td>";
-                items += "<td id='" + key + "'>" + val.name + "</td>";
-                items += "<td id='" + key + "'>" + val.surname + "</td>";
-                items += "<td id='" + key + "'>" + val.patronymic + "</td>";
-                items += "<td id='" + key + "'>" + val.municipalities + "</td>";
-                items += "<td id='" + key + "'>" + val.role + "</td>";
-                items += "</tr>";
-            });
-            $('#users').append(items);
-        });
-    });
+//    $.ajax({
+//        type: "GET",
+//        dataType: "jsonp",
+//        url: "http://localhost:8080/users",
+//        data: data,
+//        success: {
+//            var items = '';
+//            $.each(data, function (key, val) {
+//                items += "<tr>";
+//                items += "<td id='" + key + "'>" + val.id + "</td>";
+//                items += "<td id='" + key + "'>" + val.login + "</td>";
+//                items += "<td id='" + key + "'>" + val.name + "</td>";
+//                items += "<td id='" + key + "'>" + val.surname + "</td>";
+//                items += "<td id='" + key + "'>" + val.patronymic + "</td>";
+//                items += "<td id='" + key + "'>" + val.municipalities + "</td>";
+//                items += "<td id='" + key + "'>" + val.role + "</td>";
+//                items += "</tr>";
+//            });
+//            $('#users').append(items);
+//        });
+//    });
 </script>
 </body>
 </html>

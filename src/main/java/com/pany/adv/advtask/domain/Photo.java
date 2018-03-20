@@ -3,14 +3,14 @@ package com.pany.adv.advtask.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "photo_materials")
+@Table(name = "photo")
 public class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Request request;
 
     @Column(name = "file_name")
@@ -47,12 +47,4 @@ public class Photo {
         this.fileName = fileName;
     }
 
-    @Override
-    public String toString() {
-        return "Photo{" +
-                "id=" + id +
-                ", request=" + request +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
 }

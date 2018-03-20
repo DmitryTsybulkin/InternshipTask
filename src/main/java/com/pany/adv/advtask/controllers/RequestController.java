@@ -46,7 +46,7 @@ public class RequestController {
     }
 
     @PutMapping(value = "/requests/{id}")
-    public RequestDTO updateRequest(@RequestBody Request request, @RequestParam long id) {
+    public RequestDTO updateRequest(@PathVariable("id") long id, @RequestBody Request request) {
         requestService.updateRequest(id, request);
         return converter.toDto(request);
     }

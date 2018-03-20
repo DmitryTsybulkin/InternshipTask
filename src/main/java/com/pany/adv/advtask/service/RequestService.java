@@ -107,10 +107,12 @@ public class RequestService {
     //-------------------------------------JUST_TEST-------------------------------------
 
     public void insertData() {
+        Photo photo = new Photo(null, "name");
+        photoRep.save(photo);
         requestRep.save(new RequestBuilder().withDate(new Date()).withApplicant(userRep.findOne(1L)).
                 withStatus("BestStatus").withAdvPlace(placeRep.findOne(1L)).
                 withAdvConstruction(constructionRep.findOne(1L)).withHandler(userRep.findOne(1L)).
                 withDateProcessed(new Date()).withVersion(1).withReason("kek").withActuality("best").
-                withPhoto(photoRep.findOne(1L)).build());
+                withPhoto(photo).build());
     }
 }

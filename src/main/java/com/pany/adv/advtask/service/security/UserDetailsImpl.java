@@ -1,6 +1,7 @@
 package com.pany.adv.advtask.service.security;
 
 import com.pany.adv.advtask.domain.Roles;
+import com.pany.adv.advtask.domain.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class UserDetailsImpl implements UserDetails {
     private boolean isEnabled;
 
     public UserDetailsImpl() {}
+
+    public UserDetailsImpl(User user) {}
 
     public UserDetailsImpl(List<Roles> roles, String password, String username, boolean isAccountNonExpired,
                            boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {

@@ -17,7 +17,7 @@ public class TokenHandler {
 
     public TokenHandler() {
         String jwtKey = "jwtKey1234567";
-        byte[] decodedKey = Base64.getDecoder().decode(jwtKey);
+        byte[] decodedKey = Base64.getEncoder().encode(jwtKey.getBytes());
         secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 

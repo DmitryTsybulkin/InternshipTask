@@ -37,19 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .addFilterBefore(new StatelessAuthFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/users/**", "/h2-console/***", "/constructions/**",
-                                                            "/places/**", "/municipalities/**", "/photos/**", "/archive/**")
-                .hasAuthority("ADMIN").anyRequest().authenticated()
+                //.addFilterBefore(new StatelessAuthFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class)
 
-                .antMatchers("/constructions/**", "/places/**", "/municipalities/**",
-                                            "/requests/**", "/archive/**", "/photos/**")
-                .hasAuthority("EDITOR").anyRequest().authenticated()
+                .authorizeRequests()
 
-                .antMatchers("/requests/**", "/archive/**", "/photos/**")
-                .hasAuthority("USER").anyRequest().authenticated()
-
-                .antMatchers("/requests", "/archive").permitAll()
+                .antMatchers("/").hasRole("ADMIN")
+                .antMatchers().hasRole("EDITOR") //здесь не должно быть куда хочет админ
+                .antMatchers().hasRole("USER") //здесь не должно быть куда хочет админ и едитор
 
                 .anyRequest().fullyAuthenticated()
                 .and()

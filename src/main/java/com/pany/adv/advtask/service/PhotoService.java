@@ -100,10 +100,9 @@ public class PhotoService {
         return fileSaver.getImage(findById(id).getFileName());
     }
 
-    //-------------------------------------JUST_TEST-------------------------------------
-
     public void insertData() {
-        photoRep.save(new Photo(requestService.findById(1L), "name"));
+        Photo photo = photoRep.findOne(1L);
+        photo.setRequest(requestService.findById(1L));
     }
 
 }

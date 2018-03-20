@@ -91,12 +91,23 @@ public class PhotoTest {
 
     private Request request = new RequestBuilder().withActuality("actuality").withAdvConstruction(construction).withAdvPlace(place)
             .withApplicant(applicant).withDate(new Date()).withDateProcessed(new Date()).withHandler(handler).withReason("reason")
-            .withStatus("status").withVersion("1").withPhoto(photo).build();
+            .withStatus("status").withVersion(1).withPhoto(photo).build();
 
     @Before
     public void setup() throws Exception {
+
+        List<Request> requests = requestRep.findAll();
+        for (Request request : requests) {
+            request.setPhoto(null);
+        }
+
+        List<Photo> photos = photoRep.findAll();
+        for (Photo photo : photos) {
+            photo.setRequest(null);
+        }
+
         photoRep.deleteAllInBatch();
-        requestRep.deleteAllInBatch();
+        requestRep.deleteAll();
         constructionRep.deleteAllInBatch();
         placeRep.deleteAllInBatch();
         userRep.deleteAllInBatch();

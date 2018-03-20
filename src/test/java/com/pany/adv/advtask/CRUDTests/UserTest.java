@@ -161,12 +161,13 @@ public class UserTest {
 
     @Test
     public void badUpdateUserBecauseUserNotExists() throws Exception {
+        userRep.deleteAllInBatch();
         User newUser = new UserBuilder().withLogin("NewLogin").withRole(user.getRole())
                 .withMunicipality(user.getMunicipalities()).withName(user.getName()).withPassword("NewPassword")
                 .withSurname(user.getSurname()).withPatronymic(user.getPatronymic()).build();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + 2)
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
                 .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUser)))

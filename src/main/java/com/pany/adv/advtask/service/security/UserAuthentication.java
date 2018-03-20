@@ -1,18 +1,30 @@
 package com.pany.adv.advtask.service.security;
 
+import com.pany.adv.advtask.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class UserAuthentication implements Authentication {
 
     private final UserDetailsImpl user;
     private boolean authenticated = true;
 
-    @Autowired
-    public UserAuthentication(UserDetailsImpl user) {
+    public UserAuthentication(User user) {
+        this.user = UserDetailsImplBuilder.anUserModel()
+                .withUsername(user.getLogin())
+                .withPassword(user.getPassword())
+                .withRoles(Collections.singletonList(user.getRole()))
+                .withIsAccountNonExpired(true)
+                .withIsAccountNonLocked(true)
+                .withIsCredentialsNonExpired(true)
+                .withIsEnabled(true).build();
+    }
+
+    public UserAuthentication(String id, UserDetailsImpl user) {
         this.user = user;
     }
 
