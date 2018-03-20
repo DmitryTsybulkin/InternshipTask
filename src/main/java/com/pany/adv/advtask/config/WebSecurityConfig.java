@@ -1,9 +1,8 @@
 package com.pany.adv.advtask.config;
 
 
+import com.pany.adv.advtask.domain.Roles;
 import com.pany.adv.advtask.service.security.SecurityDetails;
-import com.pany.adv.advtask.service.security.SecurityEncoder;
-import com.pany.adv.advtask.web.StatelessAuthFilter;
 import com.pany.adv.advtask.web.TokenAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -22,28 +21,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecurityDetails details;
 
-    private final SecurityEncoder encoder;
-
-    private final TokenAuthService tokenAuthService;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public WebSecurityConfig(SecurityDetails details, SecurityEncoder encoder, TokenAuthService tokenAuthRep) {
+    public WebSecurityConfig(SecurityDetails details, PasswordEncoder encoder) {
         this.details = details;
         this.encoder = encoder;
-        this.tokenAuthService = tokenAuthRep;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                //.addFilterBefore(new StatelessAuthFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeRequests()
 
-                .antMatchers("/").hasRole("ADMIN")
-                .antMatchers().hasRole("EDITOR") //здесь не должно быть куда хочет админ
-                .antMatchers().hasRole("USER") //здесь не должно быть куда хочет админ и едитор
+                .antMatchers("/").permitAll()
+                .antMatchers("/requests/**", "/archive/**", "/photos/**").hasAnyRole(Roles.USER.name(), Roles.ADMIN.name(), Roles.EDITOR.name())
+                .antMatchers("/municipalities/**", "/places/**", "/constructions/**").hasAnyRole(Roles.ADMIN.name(), Roles.EDITOR.name())
+                .antMatchers("/users/**", "/h2-console").hasRole(Roles.ADMIN.name())
 
                 .anyRequest().fullyAuthenticated()
                 .and()
@@ -54,14 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/templates/**");
-    }
-
-    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(details).passwordEncoder(encoder.passwordEncoder());
+        auth
+                .userDetailsService(details)
+                .passwordEncoder(encoder);
     }
 }

@@ -3,6 +3,7 @@ package com.pany.adv.advtask.web;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.UserRep;
 import com.pany.adv.advtask.service.security.UserAuthentication;
+import com.pany.adv.advtask.service.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -25,14 +26,18 @@ public class TokenAuthService {
         this.userRep = userRep;
     }
 
-//    public Optional<Authentication> getAuthentication(HttpServletRequest httpServletRequest) {
+    public Optional<Authentication> getAuthentication(HttpServletRequest httpServletRequest) {
+        return null;
 //        return Optional
 //                .ofNullable(httpServletRequest.getHeader(AUTH_HEADER_NAME))
 //                .map(tokenHandler::extractUserId)
-//                .map(item -> Long.valueOf(item.get()))
+//                .orElseThrow(RuntimeException::new)
+//                .map(Long::valueOf)
+//                //.map(item -> Long.valueOf(item.get()))
 //                .map(userRep::findUserById)
-//                .map(item -> item.get().getId())
+//                .orElseThrow(RuntimeException::new)
+//                .map(UserDetailsImpl::new)
 //                .map(UserAuthentication::new);
-//    }
+    }
 
 }

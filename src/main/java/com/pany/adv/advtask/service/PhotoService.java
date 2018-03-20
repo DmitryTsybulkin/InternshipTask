@@ -21,16 +21,13 @@ public class PhotoService {
 
     private final FileSaver fileSaver;
 
-    private final RequestService requestService;
-
     @Value("${upload.path}")
     String path;
 
     @Autowired
-    public PhotoService(PhotoRep photoRep, FileSaver fileSaver, RequestService requestService) {
+    public PhotoService(PhotoRep photoRep, FileSaver fileSaver) {
         this.photoRep = photoRep;
         this.fileSaver = fileSaver;
-        this.requestService = requestService;
     }
 
     public Photo createPhoto(MultipartFile file, Request requestId) throws IOException {
@@ -98,11 +95,6 @@ public class PhotoService {
 
     public byte[] getPhoto(long id) throws IOException {
         return fileSaver.getImage(findById(id).getFileName());
-    }
-
-    public void insertData() {
-        Photo photo = photoRep.findOne(1L);
-        photo.setRequest(requestService.findById(1L));
     }
 
 }

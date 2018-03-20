@@ -18,13 +18,9 @@ public class AdvPlaceService {
     private final
     AdvPlaceRep placeRep;
 
-    private final
-    MunicipalityService municipalityService;
-
     @Autowired
-    public AdvPlaceService(AdvPlaceRep placeRep, MunicipalityService municipalityService) {
+    public AdvPlaceService(AdvPlaceRep placeRep) {
         this.placeRep = placeRep;
-        this.municipalityService = municipalityService;
     }
 
     //---------------------------------------CRUD----------------------------------------
@@ -75,12 +71,6 @@ public class AdvPlaceService {
             throw new ResourceNotFound();
         }
         placeRep.delete(place);
-    }
-
-    //-------------------------------------JUST_TEST-------------------------------------
-
-    public void insertData() {
-        placeRep.save(new AdvPlace("owner", "address", municipalityService.findById(1L)));
     }
 
 }

@@ -6,31 +6,24 @@ import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.exceptions.*;
 import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.UserRep;
-import com.pany.adv.advtask.service.security.SecurityEncoder;
+import com.pany.adv.advtask.config.SecurityEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final
     UserRep userRep;
 
-    private final
-    MunicipalityRep municipalityRep;
-
-    private final SecurityEncoder securityEncoder;
-
     @Autowired
-    public UserService(UserRep userRep, MunicipalityRep municipalityRep, SecurityEncoder securityEncoder) {
+    public UserService(UserRep userRep) {
         this.userRep = userRep;
-        this.municipalityRep = municipalityRep;
-        this.securityEncoder = securityEncoder;
     }
 
     //---------------------------------------CRUD----------------------------------------
@@ -78,22 +71,5 @@ public class UserService {
     public void deleteUser(long id) {
         User user = userRep.findUserById(id).orElseThrow(ResourceNotFound::new);
         userRep.delete(user);
-    }
-
-    //-------------------------------------JUST_TEST-------------------------------------
-
-    public void insertData() {
-        log.info("> Inserting data...");
-        userRep.save(new UserBuilder().withLogin("edit").withPassword(securityEncoder.passwordEncoder()
-                .encode("edit")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
-                .withMunicipality(municipalityRep.findAll()).withRole(Roles.EDITOR).build());
-
-        userRep.save(new UserBuilder().withLogin("user").withPassword(securityEncoder.passwordEncoder()
-                .encode("user")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
-                .withMunicipality(municipalityRep.findAll()).withRole(Roles.USER).build());
-
-        userRep.save(new UserBuilder().withLogin("admin").withPassword(securityEncoder.passwordEncoder()
-                .encode("admin")).withName("name").withSurname("sur").withPatronymic("patron")
-                .withMunicipality(municipalityRep.findAll()).withRole(Roles.ADMIN).build());
     }
 }

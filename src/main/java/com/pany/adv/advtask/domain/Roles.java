@@ -8,9 +8,10 @@ public enum Roles implements GrantedAuthority {
     EDITOR,
     ADMIN;
 
+    private static final String PREFIX = "ROLE_";
 
     @Override
     public String getAuthority() {
-        return this.name();
+        return PREFIX + this.name();
     }
 }

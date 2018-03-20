@@ -31,6 +31,9 @@ public class UserDetailsImpl implements UserDetails {
         this.isEnabled = isEnabled;
     }
 
+    public UserDetailsImpl(Long aLong) {
+    }
+
     @Override
     public List<Roles> getAuthorities() {
         return this.roles;

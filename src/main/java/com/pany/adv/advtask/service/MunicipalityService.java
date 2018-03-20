@@ -69,9 +69,4 @@ public class MunicipalityService {
         municipalityRep.delete(municipality);
     }
 
-    // test
-    public void insertData() {
-        municipalityRep.save(new Municipality("bestMunicipality"));
-    }
-
 }

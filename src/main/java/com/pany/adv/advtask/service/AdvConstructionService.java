@@ -18,12 +18,9 @@ public class AdvConstructionService {
     private final
     AdvConstructionRep constructionRep;
 
-    private final AdvPlaceService advPlaceService;
-
     @Autowired
-    public AdvConstructionService(AdvConstructionRep constructionRep, AdvPlaceService advPlaceService) {
+    public AdvConstructionService(AdvConstructionRep constructionRep) {
         this.constructionRep = constructionRep;
-        this.advPlaceService = advPlaceService;
     }
 
     //-------------------------------------CRUD-------------------------------------
@@ -74,13 +71,6 @@ public class AdvConstructionService {
             throw new ResourceNotFound();
         }
         constructionRep.delete(advConstruction);
-    }
-
-    //-----------------------------------JUST_TEST----------------------------------
-
-    public void insertData() {
-        constructionRep.save(new AdvConstruction(advPlaceService.findById(1L), "owner", 1, "type",
-                "status", new Date()));
     }
 
 }

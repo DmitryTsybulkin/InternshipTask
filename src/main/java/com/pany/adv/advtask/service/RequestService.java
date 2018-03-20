@@ -20,23 +20,11 @@ public class RequestService {
 
     private final RequestRep requestRep;
 
-    private final UserRep userRep;
-
-    private final AdvConstructionRep constructionRep;
-
-    private final AdvPlaceRep placeRep;
-
-    private final PhotoRep photoRep;
-
     private final KieContainer kieContainer;
 
     @Autowired
-    public RequestService(RequestRep requestRep, UserRep userRep, AdvConstructionRep constructionRep, AdvPlaceRep placeRep, PhotoRep photoRep, KieContainer kieContainer) {
+    public RequestService(RequestRep requestRep, KieContainer kieContainer) {
         this.requestRep = requestRep;
-        this.userRep = userRep;
-        this.constructionRep = constructionRep;
-        this.placeRep = placeRep;
-        this.photoRep = photoRep;
         this.kieContainer = kieContainer;
     }
     
@@ -102,17 +90,5 @@ public class RequestService {
             throw new ResourceNotFound();
         }
         requestRep.delete(request);
-    }
-    
-    //-------------------------------------JUST_TEST-------------------------------------
-
-    public void insertData() {
-        Photo photo = new Photo(null, "name");
-        photoRep.save(photo);
-        requestRep.save(new RequestBuilder().withDate(new Date()).withApplicant(userRep.findOne(1L)).
-                withStatus("BestStatus").withAdvPlace(placeRep.findOne(1L)).
-                withAdvConstruction(constructionRep.findOne(1L)).withHandler(userRep.findOne(1L)).
-                withDateProcessed(new Date()).withVersion(1).withReason("kek").withActuality("best").
-                withPhoto(photo).build());
     }
 }

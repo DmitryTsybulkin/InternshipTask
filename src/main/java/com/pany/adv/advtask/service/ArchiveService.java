@@ -77,6 +77,5 @@ public class ArchiveService {
         archiveRep.delete(archive);
     }
 
-    //-----------------------------------JUST_TEST----------------------------------
 
 }

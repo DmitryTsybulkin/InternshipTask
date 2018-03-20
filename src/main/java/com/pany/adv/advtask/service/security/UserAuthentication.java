@@ -10,22 +10,9 @@ import java.util.Collections;
 
 public class UserAuthentication implements Authentication {
 
-    private final UserDetailsImpl user;
     private boolean authenticated = true;
 
-    public UserAuthentication(User user) {
-        this.user = UserDetailsImplBuilder.anUserModel()
-                .withUsername(user.getLogin())
-                .withPassword(user.getPassword())
-                .withRoles(Collections.singletonList(user.getRole()))
-                .withIsAccountNonExpired(true)
-                .withIsAccountNonLocked(true)
-                .withIsCredentialsNonExpired(true)
-                .withIsEnabled(true).build();
-    }
-
-    public UserAuthentication(String id, UserDetailsImpl user) {
-        this.user = user;
+    public UserAuthentication(Long id) {
     }
 
     @Override
