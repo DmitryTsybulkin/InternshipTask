@@ -45,7 +45,7 @@ public class ArchiveController {
     }
 
     @PutMapping(value = "/archive/{id}")
-    public ArchiveDTO updateArchive(@RequestBody Archive archive, @RequestParam long id) {
+    public ArchiveDTO updateArchive(@RequestBody Archive archive, @PathVariable("id") long id) {
         service.updateArchive(id, archive);
         return converter.toDto(archive);
     }

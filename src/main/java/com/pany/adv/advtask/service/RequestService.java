@@ -1,7 +1,6 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.*;
-import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,11 +32,11 @@ public class RequestService {
         if (newRequest == null) {
             throw new MissingParametersException();
         }
+        requestRep.save(newRequest);
         KieSession kieSession = kieContainer.newKieSession("rulesSession");
         kieSession.insert(newRequest);
         kieSession.fireAllRules();
         kieSession.dispose();
-        requestRep.save(newRequest);
     }
 
     public Request findById(long id) {

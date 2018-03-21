@@ -12,7 +12,7 @@ public class AdvConstructionDTO {
     public int number;
     public String type;
     public String status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Date date;
 
 }

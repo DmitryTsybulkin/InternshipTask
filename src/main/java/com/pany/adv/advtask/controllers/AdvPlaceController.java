@@ -45,7 +45,7 @@ public class AdvPlaceController {
     }
 
     @PutMapping(value = "/places/{id}")
-    public AdvPlaceDTO updatePlace(@RequestBody AdvPlace place, @RequestParam long id) {
+    public AdvPlaceDTO updatePlace(@RequestBody AdvPlace place, @PathVariable("id") long id) {
         service.updateAdvPlace(id, place);
         return converter.toDto(place);
     }

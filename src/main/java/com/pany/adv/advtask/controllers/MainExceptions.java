@@ -6,10 +6,14 @@ import com.pany.adv.advtask.service.convertors.ExceptionDTOConverter;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,6 +21,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class MainExceptions {
@@ -68,11 +74,19 @@ public class MainExceptions {
 
     @ExceptionHandler(MissingParametersException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionDTO> exceptionBadRequest0(WebRequest request) {
+    public ResponseEntity<ExceptionDTO> exceptionBadRequest0(MethodArgumentNotValidException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add(error.getField()+": "+error.getDefaultMessage());
+        }
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errors.add(error.getObjectName()+": "+error.getDefaultMessage());
+        }
+
         APIException exception = new APIException();
         exception.setErrorCode(HttpStatus.BAD_REQUEST.value());
         exception.setErrorMessage("Bad request by address: " + request.getDescription(false) +
-                " because one or more parameters are missing.");
+                " because one or more parameters are missing." + "\n" + errors);
         return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
     }
 
@@ -123,10 +137,18 @@ public class MainExceptions {
 
     @ExceptionHandler(FileNotImageException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionDTO> exceptionNotImage() {
+    public ResponseEntity<ExceptionDTO> exceptionNotImage(MethodArgumentNotValidException ex) {
+        List<String> errors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add(error.getField()+": "+error.getDefaultMessage());
+        }
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errors.add(error.getObjectName()+": "+error.getDefaultMessage());
+        }
+
         APIException exception = new APIException();
         exception.setErrorCode(HttpStatus.BAD_REQUEST.value());
-        exception.setErrorMessage("File is not image.");
+        exception.setErrorMessage("File is not image."+"\n"+ex.getLocalizedMessage()+"\n"+errors);
         return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.BAD_REQUEST);
     }
 

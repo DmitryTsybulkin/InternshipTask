@@ -9,52 +9,29 @@
 <body>
 <header><h1>mega kek</h1></header>
 <div class = "container">
-    <link href="/logout" />
+    <p><a href="/logout" >выйти</a></p>
     <div class="table-responsive">
-        <table class="table" id="users">
+        <table class="table">
             <thead>
                 <tr>
                     <th>id</th>
-                    <th>login</th>
-                    <th>name</th>
-                    <th>surname</th>
-                    <th>patronymic</th>
-                    <th>municipalities</th>
-                    <th>role</th>
+                    <th>Логин</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Отчество</th>
+                    <th>Муниципалитеты</th>
+                    <th>Роли</th>
+                    <th>Изменить</th>
+                    <th>Удалить</th>
                 </tr>
             </thead>
-            <tbody>
-                <td id="ident"></td>
-                <td id="login"></td>
+            <tbody id="tBodyRows">
             </tbody>
         </table>
     </div>
 </div>
 <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="/static/scripts/scripts.js"></script>
-<script>
-//    $.ajax({
-//        type: "GET",
-//        dataType: "jsonp",
-//        url: "http://localhost:8080/users",
-//        data: data,
-//        success: {
-//            var items = '';
-//            $.each(data, function (key, val) {
-//                items += "<tr>";
-//                items += "<td id='" + key + "'>" + val.id + "</td>";
-//                items += "<td id='" + key + "'>" + val.login + "</td>";
-//                items += "<td id='" + key + "'>" + val.name + "</td>";
-//                items += "<td id='" + key + "'>" + val.surname + "</td>";
-//                items += "<td id='" + key + "'>" + val.patronymic + "</td>";
-//                items += "<td id='" + key + "'>" + val.municipalities + "</td>";
-//                items += "<td id='" + key + "'>" + val.role + "</td>";
-//                items += "</tr>";
-//            });
-//            $('#users').append(items);
-//        });
-//    });
-</script>
+<script src="scripts.js"></script>
 </body>
 </html>

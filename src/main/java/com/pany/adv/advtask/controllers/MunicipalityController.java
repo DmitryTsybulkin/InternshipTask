@@ -39,7 +39,7 @@ public class MunicipalityController {
     }
 
     @PutMapping(value = "/municipalities/{id}")
-    public MunicipalityDTO updateMunicipality(@RequestBody Municipality municipality, @RequestParam long id) {
+    public MunicipalityDTO updateMunicipality(@RequestBody Municipality municipality, @PathVariable long id) {
         municipalityService.update(id, municipality.getName());
         return converter.toDto(municipality);
     }

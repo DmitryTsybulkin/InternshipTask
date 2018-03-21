@@ -1,4 +1,4 @@
-package com.pany.adv.advtask.PhotoTests;
+package com.pany.adv.advtask.CRUDTests;
 
 
 import com.pany.adv.advtask.AdvTaskApplication;
@@ -144,38 +144,6 @@ public class PhotoTest {
                 .andExpect(MockMvcResultMatchers.
                         jsonPath("fileName", Matchers.containsString(photo.getFileName())))
                 .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    public void createPhotoFailedMissFile() throws Exception {
-        photoRep.deleteAllInBatch();
-        mockMvc.perform(MockMvcRequestBuilders.post("/photos")
-                .with(user(admin.getLogin()).password(admin.getPassword())
-                        .roles(admin.getRole().name()).authorities(admin.getRole()))
-                .content(asJsonString(request)).contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void createPhotoFailedMissRequest() throws Exception {
-        photoRep.deleteAllInBatch();
-        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos")
-                .file(file).contentType(MediaType.MULTIPART_FORM_DATA)
-                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole()))
-                .content("bad_info").contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void createPhotoFailedFileIsNotImage() throws Exception {
-        MockMultipartFile file1 = new MockMultipartFile("new", "new.pdf", MediaType.APPLICATION_PDF_VALUE, "fafa".getBytes());
-        photoRep.deleteAllInBatch();
-                mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos")
-                        .file(file1).contentType(MediaType.APPLICATION_PDF_VALUE)
-                        .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name())
-                                .authorities(admin.getRole()))
-                .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test

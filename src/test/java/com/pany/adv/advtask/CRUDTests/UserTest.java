@@ -51,9 +51,6 @@ public class UserTest {
     private UserRep userRep;
 
     @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
     private RequestRep requestRep;
 
     @Autowired
@@ -86,15 +83,6 @@ public class UserTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(user))));
-    }
-
-    //bad
-    @Test
-    public void createUserFailedBecauseMissParameter() throws Exception {
-        userRep.deleteAllInBatch();
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/")
-                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole())))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -150,16 +138,6 @@ public class UserTest {
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(newUser))));
     }
 
-    //bad
-    @Test
-    public void badUpdateUserBecauseMissParameter() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + user.getId())
-                .with(user(user.getLogin()).password(user.getPassword()).roles(user.getRole().name()).authorities(user.getRole()))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("bad_info"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
     @Test
     public void badUpdateUserBecauseUserNotExists() throws Exception {
         userRep.deleteAllInBatch();
@@ -187,10 +165,22 @@ public class UserTest {
     }
 
     @Test
-    public void accessDeniedToUsers() throws Exception {
+    public void accessDeniedForUsers() throws Exception {
             User simpleUser = userRep.save(new UserBuilder().withLogin("user").withName("user")
                     .withPassword("user").withSurname("surname").withRole(Roles.USER)
                     .withMunicipality(municipalities).withPatronymic("patron").build());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users")
+                .with(user(simpleUser.getLogin()).password(simpleUser.getPassword()).roles(simpleUser.getRole().name())
+                        .authorities(simpleUser.getRole())))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    public void accessDeniedForEditors() throws Exception {
+        User simpleUser = userRep.save(new UserBuilder().withLogin("user").withName("user")
+                .withPassword("user").withSurname("surname").withRole(Roles.EDITOR)
+                .withMunicipality(municipalities).withPatronymic("patron").build());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users")
                 .with(user(simpleUser.getLogin()).password(simpleUser.getPassword()).roles(simpleUser.getRole().name())

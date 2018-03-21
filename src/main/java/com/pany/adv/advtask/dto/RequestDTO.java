@@ -12,14 +12,14 @@ import java.util.Date;
 public class RequestDTO {
 
     public long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Date date;
     public String applicant;
     public String status;
     public AdvPlaceDTO place;
     public AdvConstructionDTO advConstruction;
     public String handler;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Date dateProcessed;
     public int version;
     public String reason;

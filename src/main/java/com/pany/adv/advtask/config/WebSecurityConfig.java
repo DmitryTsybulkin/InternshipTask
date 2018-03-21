@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -36,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .authorizeRequests()
 
-                .antMatchers("/").permitAll()
+                .antMatchers("/","/error").permitAll()
                 .antMatchers("/requests/**", "/archive/**", "/photos/**").hasAnyRole(Roles.USER.name(), Roles.ADMIN.name(), Roles.EDITOR.name())
                 .antMatchers("/municipalities/**", "/places/**", "/constructions/**").hasAnyRole(Roles.ADMIN.name(), Roles.EDITOR.name())
                 .antMatchers("/users/**", "/h2-console").hasRole(Roles.ADMIN.name())

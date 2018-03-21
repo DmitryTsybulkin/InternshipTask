@@ -45,7 +45,7 @@ public class AdvConstructionController {
     }
 
     @PutMapping(value = "/constructions/{id}")
-    public AdvConstructionDTO updateConstruction(@RequestBody AdvConstruction construction, @RequestParam long id) {
+    public AdvConstructionDTO updateConstruction(@RequestBody AdvConstruction construction, @PathVariable("id") long id) {
         service.updateConstruction(id, construction);
         return converter.toDto(construction);
     }

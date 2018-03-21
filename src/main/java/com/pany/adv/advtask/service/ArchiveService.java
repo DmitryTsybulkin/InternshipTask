@@ -1,7 +1,6 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.Archive;
-import com.pany.adv.advtask.exceptions.DuplicateEntityException;
 import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;

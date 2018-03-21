@@ -6,7 +6,6 @@ import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.MunicipalityRep;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
