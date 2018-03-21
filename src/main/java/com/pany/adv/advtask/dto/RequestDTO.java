@@ -16,14 +16,14 @@ public class RequestDTO {
     public Date date;
     public String applicant;
     public String status;
-    public AdvPlaceDTO place;
-    public AdvConstructionDTO advConstruction;
+    public long place;
+    public long advConstruction;
     public String handler;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Date dateProcessed;
     public int version;
     public String reason;
     public String actuality;
-    public PhotoDTO photo;
+    public long photo;
 
 }

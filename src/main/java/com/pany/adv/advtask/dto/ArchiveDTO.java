@@ -9,9 +9,9 @@ import java.util.Date;
 public class ArchiveDTO {
 
     public long id;
-    public RequestDTO requestId;
-    public AdvPlaceDTO place;
-    public AdvConstructionDTO advConstruction;
+    public long requestId;
+    public long place;
+    public long advConstruction;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Date date;
     public String applicant;

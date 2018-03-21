@@ -134,9 +134,10 @@ public class PhotoTest {
     @Test
     public void createPhoto() throws Exception {
         photoRep.deleteAllInBatch();
+
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/photos").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
         .content(asJsonString(request)).contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
+                .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("id", Matchers.notNullValue()))

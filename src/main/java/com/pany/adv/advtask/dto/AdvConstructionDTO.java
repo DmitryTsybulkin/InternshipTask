@@ -7,7 +7,7 @@ import java.util.Date;
 public class AdvConstructionDTO {
 
     public long id;
-    public AdvPlaceDTO place;
+    public long place;
     public String owner;
     public int number;
     public String type;

@@ -60,37 +60,37 @@ public class RequestTest {
     @Autowired
     private RequestDTOConverter converter;
 
-    private User applicant;
-
-    private User editor;
-
-    private User admin;
-
-    private Request emptyRequest;
-
-    private Request notConfirmedRequest;
-
-    private Request confirmedRequest;
-
-    private Photo photo;
-
-    private AdvPlace place;
-
-    private AdvConstruction construction;
+    private Municipality municipality = new Municipality("name");
 
     private List<Municipality> municipalities = new ArrayList<>();
 
+    private AdvPlace place = new AdvPlace("owner", "address", municipality);
+
+    private AdvConstruction construction = new AdvConstruction(place, "owner", 1, "type", "status", new Date());
+
+    private Photo photo = new Photo(null, "name");
+
+    private User editor = new UserBuilder().withLogin("editor").withPassword("editor").withName("editor").withSurname("editor")
+                .withPatronymic("editor").withMunicipality(municipalities).withRole(Roles.EDITOR).build();
+
+    private User applicant = new UserBuilder().withLogin("applicant").withPassword("applicant").withName("applicant")
+                .withSurname("applicant").withPatronymic("applicant").withMunicipality(municipalities).withRole(Roles.USER).build();
+
+    private Request emptyRequest = new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
+            .withAdvPlace(place).withApplicant(applicant).withDateProcessed(null).withHandler(null).withReason(null).withPhoto(photo)
+            .withVersion(0).withStatus("Отправлено на обработку").build();
+
+    private Request notConfirmedRequest = new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
+                .withAdvPlace(place).withApplicant(applicant).withDateProcessed(new Date()).withHandler(editor).withReason("reason").withPhoto(photo)
+                .withVersion(1).withStatus("Отклонено").build();
+
+    private Request confirmedRequest = new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
+                .withAdvPlace(place).withApplicant(applicant).withDateProcessed(new Date()).withHandler(editor).withReason(null).withPhoto(photo)
+                .withVersion(0).withStatus("Согласовано").build();
+
+
     @Before
     public void setup() throws Exception {
-        List<Request> requests = requestRep.findAll();
-        for (Request request : requests) {
-            request.setPhoto(null);
-        }
-
-        List<Photo> photos = photoRep.findAll();
-        for (Photo photo : photos) {
-            photo.setRequest(null);
-        }
 
         photoRep.deleteAllInBatch();
         requestRep.deleteAll();
@@ -99,44 +99,33 @@ public class RequestTest {
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
 
-        municipalities.add(municipalityRep.save(new Municipality("name")));
+        municipalities.add(municipality);
+        municipalityRep.save(municipality);
 
-        admin = userRep.save(new UserBuilder().withLogin("admin").withPassword("admin").withName("admin").withSurname("admin")
-                .withPatronymic("admin").withMunicipality(municipalities).withRole(Roles.ADMIN).build());
+        userRep.save(applicant);
+        userRep.save(editor);
 
-        editor = userRep.save(new UserBuilder().withLogin("editor").withPassword("editor").withName("editor").withSurname("editor")
-                .withPatronymic("editor").withMunicipality(municipalities).withRole(Roles.EDITOR).build());
+        placeRep.save(place);
 
-        applicant = userRep.save(new UserBuilder().withLogin("applicant").withPassword("applicant").withName("applicant")
-                .withSurname("applicant").withPatronymic("applicant").withRole(Roles.USER).withMunicipality(municipalities).build());
+        constructionRep.save(construction);
 
-        place = placeRep.save(new AdvPlace("owner", "address", municipalities.get(0)));
+        photoRep.save(photo);
 
-        construction = constructionRep.save(new AdvConstruction(place, "owner", 1, "type", "status", new Date()));
+        requestRep.save(emptyRequest);
+        requestRep.save(notConfirmedRequest);
+        requestRep.save(confirmedRequest);
 
-        photo = photoRep.save(new Photo(null, "name"));
-
-        emptyRequest = requestRep.save(new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
-                .withAdvPlace(place).withApplicant(applicant).withDateProcessed(null).withHandler(null).withReason(null).withPhoto(photo)
-                .withVersion(0).withStatus("Отправлено на обработку").build());
-
-        notConfirmedRequest = requestRep.save(new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
-                .withAdvPlace(place).withApplicant(applicant).withDateProcessed(new Date()).withHandler(editor).withReason("reason").withPhoto(photo)
-                .withVersion(1).withStatus("Отклонено").build());
-
-        confirmedRequest = requestRep.save(new RequestBuilder().withDate(new Date()).withActuality("actuality").withAdvConstruction(construction)
-                .withAdvPlace(place).withApplicant(applicant).withDateProcessed(new Date()).withHandler(editor).withReason(null).withPhoto(photo)
-                .withVersion(0).withStatus("Согласовано").build());
-
+        photo.setRequest(emptyRequest);
     }
 
     @Test
     public void createRequest() throws Exception {
+        requestRep.deleteAllInBatch();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/requests")
                 .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole()))
-                .content(asJsonString(emptyRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(emptyRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(emptyRequest))));

@@ -1,5 +1,7 @@
 package com.pany.adv.advtask.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     private Request request;
 

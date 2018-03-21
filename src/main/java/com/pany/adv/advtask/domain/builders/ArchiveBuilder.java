@@ -16,7 +16,7 @@ public final class ArchiveBuilder {
     private String reason;
     private String actuality;
 
-    private ArchiveBuilder() {
+    public ArchiveBuilder() {
     }
 
     public static ArchiveBuilder anArchive() {

@@ -8,21 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdvConstructionDTOConverter {
 
-    private final
-    AdvPlaceDTOConverter converter;
-
-    @Autowired
-    public AdvConstructionDTOConverter(AdvPlaceDTOConverter converter) {
-        this.converter = converter;
-    }
-
     public AdvConstructionDTO toDto(AdvConstruction construction) {
         final AdvConstructionDTO dto = new AdvConstructionDTO();
         dto.id = construction.getId();
         dto.date = construction.getDate();
         dto.number = construction.getNumber();
         dto.owner = construction.getOwner();
-        dto.place = converter.toDto(construction.getAdvPlaceId());
+        dto.place = construction.getAdvPlaceId().getId();
         dto.type = construction.getType();
         dto.status = construction.getStatus();
         return dto;

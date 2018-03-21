@@ -13,6 +13,8 @@ $(document).ready(function(){
 
     jQuery.support.cors = false;
 
+    var table = $('#fsd').DataTable
+
     $.ajax(
         {
             type: "GET",

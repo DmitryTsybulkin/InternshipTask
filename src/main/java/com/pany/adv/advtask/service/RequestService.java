@@ -33,10 +33,6 @@ public class RequestService {
             throw new MissingParametersException();
         }
         requestRep.save(newRequest);
-        KieSession kieSession = kieContainer.newKieSession("rulesSession");
-        kieSession.insert(newRequest);
-        kieSession.fireAllRules();
-        kieSession.dispose();
     }
 
     public Request findById(long id) {

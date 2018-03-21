@@ -1,6 +1,8 @@
 package com.pany.adv.advtask.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -44,6 +46,7 @@ public class Request {
     @Column(name = "relevance")
     private String actuality;
 
+    @JsonIgnore
     @OneToOne
     private Photo photo;
 
