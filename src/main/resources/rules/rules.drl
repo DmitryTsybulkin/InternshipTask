@@ -5,16 +5,6 @@ import com.pany.adv.advtask.domain.Archive
 import com.pany.adv.advtask.service.ArchiveService
 import java.util.Date
 
-rule "Request Valid"
-
-    dialect "java"
-
-    when
-        newRequest : Request(handler!=null, status=="Согласовано")
-    then
-        newRequest.setDateProcessed(new Date());
-     end
-
 rule "Request Not Valid"
 
     dialect "java"

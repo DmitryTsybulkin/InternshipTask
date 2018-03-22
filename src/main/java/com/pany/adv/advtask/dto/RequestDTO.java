@@ -24,6 +24,6 @@ public class RequestDTO {
     public int version;
     public String reason;
     public String actuality;
-    public long photo;
+    public String photoName;
 
 }

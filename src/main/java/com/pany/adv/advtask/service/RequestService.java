@@ -5,12 +5,15 @@ import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
 import com.pany.adv.advtask.repository.*;
+import com.pany.adv.advtask.service.utils.FileSaver;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -18,12 +21,18 @@ public class RequestService {
 
     private final RequestRep requestRep;
 
+    private final PhotoRep photoRep;
+
     private final KieContainer kieContainer;
 
+    private final FileSaver fileSaver;
+
     @Autowired
-    public RequestService(RequestRep requestRep, KieContainer kieContainer) {
+    public RequestService(RequestRep requestRep, KieContainer kieContainer, FileSaver fileSaver, PhotoRep photoRep) {
         this.requestRep = requestRep;
         this.kieContainer = kieContainer;
+        this.fileSaver = fileSaver;
+        this.photoRep = photoRep;
     }
     
     //-------------------------------------CRUD-------------------------------------
@@ -78,11 +87,31 @@ public class RequestService {
         kieSession.dispose();
     }
 
-    public void deleteRequest(long id) {
+    public void deleteRequest(long id) throws IOException {
         Request request = requestRep.findOne(id);
         if (request == null) {
             throw new ResourceNotFound();
         }
+        deletePhoto(id);
         requestRep.delete(request);
+    }
+
+    private void deletePhoto(long id) throws IOException {
+
+        boolean deleted;
+        Photo targetPhoto = photoRep.findPhotoByRequest(id);
+
+        if (targetPhoto == null) {
+            throw new ResourceNotFound();
+        }
+
+        deleted = fileSaver.deleteFile(targetPhoto.getFileName());
+
+        if (!deleted) {
+            throw new FileNotFoundException();
+        }
+
+        photoRep.delete(targetPhoto);
+
     }
 }

@@ -8,6 +8,7 @@ import com.pany.adv.advtask.service.convertors.RequestDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class RequestController {
     }
 
     @DeleteMapping(value = "/requests/{id}")
-    public void deleteRequest(@PathVariable("id") long id) {
+    public void deleteRequest(@PathVariable("id") long id) throws IOException {
         requestService.deleteRequest(id);
     }
 

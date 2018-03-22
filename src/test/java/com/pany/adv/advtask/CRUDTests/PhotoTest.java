@@ -48,8 +48,6 @@ public class PhotoTest {
     @Value("${upload.path}")
     String path;
 
-    private Photo photo;
-
     @Autowired
     private PhotoRep photoRep;
 
@@ -90,22 +88,14 @@ public class PhotoTest {
 
     private AdvConstruction construction = new AdvConstruction(place, "bestOwner", 5, "bestType", "status", new Date());
 
+    private Photo photo;
+
     private Request request = new RequestBuilder().withActuality("actuality").withAdvConstruction(construction).withAdvPlace(place)
             .withApplicant(applicant).withDate(new Date()).withDateProcessed(new Date()).withHandler(handler).withReason("reason")
             .withStatus("status").withVersion(1).withPhoto(photo).build();
 
     @Before
     public void setup() throws Exception {
-
-        List<Request> requests = requestRep.findAll();
-        for (Request request : requests) {
-            request.setPhoto(null);
-        }
-
-        List<Photo> photos = photoRep.findAll();
-        for (Photo photo : photos) {
-            photo.setRequest(null);
-        }
 
         photoRep.deleteAllInBatch();
         requestRep.deleteAll();
@@ -189,32 +179,23 @@ public class PhotoTest {
     }
 
     @Test
+    public void photoFileIsOk() throws Exception {
+        photo.setFileName(fileSaver.store(file));
+        photoRep.save(photo);
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId() + "/" + photo.getFileName())
+                .param("fileName", photo.getFileName())
+                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(file.getContentType()))
+                .andExpect(MockMvcResultMatchers.content().bytes(file.getBytes()));
+    }
+
+    @Test
     public void photoIsNotFound() throws Exception {
         photoRep.deleteAllInBatch();
         mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo.getId())
                 .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    @Test
-    public void deletePhoto() throws Exception {
-
-        MockMultipartFile multipartFile = new MockMultipartFile("filen", "filen.jpeg", MediaType.IMAGE_JPEG_VALUE, "ladudilabudai".getBytes());
-
-        String fullName = fileSaver.store(multipartFile);
-
-        Photo photo1 = new Photo(request, fullName);
-        photoRep.save(photo1);
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/photos/" + photo1.getId())
-                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photo1.getId())
-                .with(user(admin.getLogin()).password(admin.getPassword()).roles(admin.getRole().name()).authorities(admin.getRole())))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-
-        assertFalse(fileSaver.isExists(fullName));
     }
 
 }

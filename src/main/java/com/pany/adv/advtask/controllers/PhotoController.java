@@ -44,14 +44,9 @@ public class PhotoController {
         return converter.toDto(service.findById(id));
     }
 
-    @GetMapping(value = "/photos/{id}/file")
-    public byte[] getPhoto(@PathVariable("id") long id) throws IOException {
-        return service.getPhoto(id);
-    }
-
-    @DeleteMapping(value = "/photos/{id}")
-    public void deletePhoto(@PathVariable("id") long id) throws IOException {
-        service.deletePhoto(id);
+    @GetMapping(value = "/photos/{id}/{fileName}")
+    public byte[] getPhoto(@RequestParam("fileName") String fileName) throws IOException {
+        return service.getPhoto(fileName);
     }
 
 }

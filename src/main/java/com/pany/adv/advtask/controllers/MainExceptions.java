@@ -64,12 +64,12 @@ public class MainExceptions {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ExceptionDTO> exceptionForbidden() {
         APIException exception = new APIException();
-        exception.setErrorCode(HttpStatus.FORBIDDEN.value());
-        exception.setErrorMessage("Access denied.");
-        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.FORBIDDEN);
+        exception.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        exception.setErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        return new ResponseEntity<ExceptionDTO>(converter.toDto(exception), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MissingParametersException.class)

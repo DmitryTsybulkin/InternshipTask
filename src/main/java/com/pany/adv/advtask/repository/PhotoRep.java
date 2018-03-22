@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PhotoRep extends JpaRepository<Photo, Long> {
     long countPhotosByFileName(String address);
+    Photo findPhotoByRequest(long id);
 }

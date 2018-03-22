@@ -71,30 +71,8 @@ public class PhotoService {
         return photos;
     }
 
-    // TODO: 08.03.2018 get photo-file (frontend by address?)
-    // TODO: 09.03.2018 check that all parameters is exists: frontend.
-
-    public void deletePhoto(long id) throws IOException {
-
-        boolean deleted;
-        Photo targetPhoto = findById(id);
-
-        if (targetPhoto == null) {
-            throw new ResourceNotFound();
-        }
-
-        deleted = fileSaver.deleteFile(targetPhoto.getFileName());
-
-        if (!deleted) {
-            throw new FileNotFoundException();
-        }
-
-        photoRep.delete(targetPhoto);
-
-    }
-
-    public byte[] getPhoto(long id) throws IOException {
-        return fileSaver.getImage(findById(id).getFileName());
+    public byte[] getPhoto(String fileName) throws IOException {
+        return fileSaver.getImage(fileName);
     }
 
 }
