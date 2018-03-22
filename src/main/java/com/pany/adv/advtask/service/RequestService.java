@@ -1,6 +1,7 @@
 package com.pany.adv.advtask.service;
 
 import com.pany.adv.advtask.domain.*;
+import com.pany.adv.advtask.domain.builders.ArchiveBuilder;
 import com.pany.adv.advtask.exceptions.EntitiesNotFoundException;
 import com.pany.adv.advtask.exceptions.MissingParametersException;
 import com.pany.adv.advtask.exceptions.ResourceNotFound;
@@ -14,7 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
+import static org.hibernate.validator.internal.util.Contracts.assertTrue;
 
 @Service
 public class RequestService {
@@ -27,12 +31,15 @@ public class RequestService {
 
     private final FileSaver fileSaver;
 
+    private final ArchiveRep archiveRep;
+
     @Autowired
-    public RequestService(RequestRep requestRep, KieContainer kieContainer, FileSaver fileSaver, PhotoRep photoRep) {
+    public RequestService(RequestRep requestRep, KieContainer kieContainer, FileSaver fileSaver, PhotoRep photoRep, ArchiveRep archiveRep) {
         this.requestRep = requestRep;
         this.kieContainer = kieContainer;
         this.fileSaver = fileSaver;
         this.photoRep = photoRep;
+        this.archiveRep = archiveRep;
     }
     
     //-------------------------------------CRUD-------------------------------------
@@ -81,6 +88,13 @@ public class RequestService {
         request.setVersion(newRequest.getVersion());
         request.setPhoto(newRequest.getPhoto());
 
+        if (newRequest.getStatus().equals("Отклонено")) {
+            archiveRep.save(new ArchiveBuilder().withActuality(newRequest.getActuality()).withAdvConstruction(newRequest.getAdvConstruction())
+                    .withAdvPlace(newRequest.getAdvPlace()).withApplicant(newRequest.getApplicant()).withDate(newRequest.getDate())
+                    .withDateProcessed(newRequest.getDateProcessed()).withHandler(newRequest.getHandler()).withReason(newRequest.getReason())
+                    .withRequestId(request).withVersion(newRequest.getVersion()).build());
+        }
+
         KieSession kieSession = kieContainer.newKieSession("rulesSession");
         kieSession.insert(newRequest);
         kieSession.fireAllRules();
@@ -92,14 +106,14 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound();
         }
-        deletePhoto(id);
+        deletePhoto(request);
         requestRep.delete(request);
     }
 
-    private void deletePhoto(long id) throws IOException {
+    private void deletePhoto(Request request) throws IOException {
 
         boolean deleted;
-        Photo targetPhoto = photoRep.findPhotoByRequest(id);
+        Photo targetPhoto = photoRep.findPhotoByRequest(request);
 
         if (targetPhoto == null) {
             throw new ResourceNotFound();

@@ -135,6 +135,9 @@ public class RequestTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(request))));
+
+        photoRep.deleteAllInBatch();
+        requestRep.deleteAllInBatch();
     }
 
     @Test
@@ -178,7 +181,6 @@ public class RequestTest {
         Request confirmedRequest = request;
         confirmedRequest.setStatus("Согласовано");
         confirmedRequest.setHandler(editor);
-        confirmedRequest.setDateProcessed(new Date());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/requests/" + request.getId())
                 .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole()))
@@ -187,16 +189,33 @@ public class RequestTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(confirmedRequest))));
-
+        photoRep.deleteAllInBatch();
+        requestRep.deleteAllInBatch();
     }
 
     @Test
     public void updateNotConfirmedRequest() throws Exception {
+        requestRep.save(request);
+
         Request notConfirmedRequest = request;
         notConfirmedRequest.setHandler(editor);
         notConfirmedRequest.setStatus("Отклонено");
         notConfirmedRequest.setReason("bad");
-        notConfirmedRequest.setDateProcessed(new Date());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/requests/" + request.getId())
+                .with(user(editor.getLogin()).password(editor.getPassword()).roles(editor.getRole().name()).authorities(editor.getRole()))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(notConfirmedRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/archive")
+                .with(user(editor.getLogin()).password(editor.getPassword()).roles(editor.getRole().name()).authorities(editor.getRole())))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        photoRep.deleteAllInBatch();
+        archiveRep.deleteAllInBatch();
+        requestRep.deleteAllInBatch();
     }
 
     @Test
@@ -205,10 +224,11 @@ public class RequestTest {
 
         String fullName = fileSaver.store(multipartFile);
 
-        //Photo photo1 = new Photo(request, fullName);
 
         requestRep.save(request);
-        photoRep.save(new Photo(request, fullName));
+        Photo img = photoRep.save(new Photo(request, fullName));
+
+        long id = img.getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/requests/" + request.getId())
                 .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole())))
@@ -218,32 +238,26 @@ public class RequestTest {
                 .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + photoRep.findPhotoByRequest(request.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/photos/" + id)
                 .with(user(applicant.getLogin()).password(applicant.getPassword()).roles(applicant.getRole().name()).authorities(applicant.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         assertFalse(fileSaver.isExists(fullName));
+        fileSaver.deleteFile(fullName);
+        photoRep.deleteAllInBatch();
+        requestRep.deleteAllInBatch();
     }
 
     @After
     public void dropDb() throws Exception {
-
-        List<Request> requests = requestRep.findAll();
-        for (Request request : requests) {
-            request.setPhoto(null);
-        }
-
-        List<Photo> photos = photoRep.findAll();
-        for (Photo photo : photos) {
-            photo.setRequest(null);
-        }
-
         photoRep.deleteAllInBatch();
+        archiveRep.deleteAllInBatch();
         requestRep.deleteAllInBatch();
         constructionRep.deleteAllInBatch();
         placeRep.deleteAllInBatch();
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
     }
+
 
 }

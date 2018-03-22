@@ -12,19 +12,17 @@ rule "Request Not Valid"
     when
         newRequest : Request(handler!=null, status=="Отклонено")
     then
-        newRequest.setDateProcessed(new Date());
         newRequest.setVersion(newRequest.getVersion()+1);
-        Archive archive = new Archive();
-        archive.setRequestId(newRequest);
-        archive.setActuality(newRequest.getActuality());
-        archive.setAdvConstruction(newRequest.getAdvConstruction());
-        archive.setAdvPlace(newRequest.getAdvPlace());
-        archive.setApplicant(newRequest.getApplicant());
-        archive.setDate(newRequest.getDate());
-        archive.setHandler(newRequest.getHandler());
-        archive.setReason(newRequest.getReason());
-        archive.setDateProcessed(newRequest.getDateProcessed());
-        archive.setVersion(newRequest.getVersion());
-        insert(archive);
+        newRequest.setDateProcessed(new Date());
      end
+
+rule "Request Valid"
+
+     dialect "java"
+
+     when
+         newRequest : Request(handler!=null, status=="Согласовано")
+     then
+         newRequest.setDateProcessed(new Date());
+      end
 

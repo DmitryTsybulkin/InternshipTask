@@ -52,9 +52,6 @@ public class UserTest {
     private UserRep userRep;
 
     @Autowired
-    private RequestRep requestRep;
-
-    @Autowired
     private MunicipalityRep municipalityRep;
 
     @Autowired
@@ -63,7 +60,6 @@ public class UserTest {
     @Before
     public void setup() throws Exception {
 
-        requestRep.deleteAllInBatch();
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
 
@@ -180,7 +176,7 @@ public class UserTest {
     @Test
     public void accessDeniedForEditors() throws Exception {
         User simpleUser = userRep.save(new UserBuilder().withLogin("user").withName("user")
-                .withPassword("user").withSurname("surname").withRole(Roles.EDITOR)
+                .withPassword("user").withSurname("surname").withRole(Roles.USER)
                 .withMunicipality(municipalities).withPatronymic("patron").build());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users")
@@ -191,7 +187,6 @@ public class UserTest {
 
     @After
     public void dropDb() throws Exception {
-        requestRep.deleteAllInBatch();
         userRep.deleteAllInBatch();
         municipalityRep.deleteAllInBatch();
     }
