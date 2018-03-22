@@ -9,6 +9,7 @@ import com.pany.adv.advtask.repository.*;
 import com.pany.adv.advtask.service.utils.FileSaver;
 import com.pany.adv.advtask.service.convertors.PhotoDTOConverter;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,6 +146,8 @@ public class PhotoTest {
                 .andExpect(MockMvcResultMatchers.
                         jsonPath("fileName", Matchers.containsString(photo.getFileName())))
                 .andDo(MockMvcResultHandlers.print());
+        photoRep.deleteAllInBatch();
+        fileSaver.deleteFile(file.getOriginalFilename());
     }
 
     @Test

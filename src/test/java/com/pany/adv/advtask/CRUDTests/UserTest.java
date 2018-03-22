@@ -9,6 +9,7 @@ import com.pany.adv.advtask.repository.MunicipalityRep;
 import com.pany.adv.advtask.repository.RequestRep;
 import com.pany.adv.advtask.repository.UserRep;
 import com.pany.adv.advtask.service.convertors.UserDTOConverter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -186,6 +187,13 @@ public class UserTest {
                 .with(user(simpleUser.getLogin()).password(simpleUser.getPassword()).roles(simpleUser.getRole().name())
                         .authorities(simpleUser.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @After
+    public void dropDb() throws Exception {
+        requestRep.deleteAllInBatch();
+        userRep.deleteAllInBatch();
+        municipalityRep.deleteAllInBatch();
     }
 
 }

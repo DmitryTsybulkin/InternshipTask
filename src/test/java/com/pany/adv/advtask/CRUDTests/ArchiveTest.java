@@ -7,6 +7,7 @@ import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.repository.*;
 import com.pany.adv.advtask.service.convertors.ArchiveDTOConverter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -184,6 +185,17 @@ public class ArchiveTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/archive/" + archive.getId())
                 .with(user(editor.getLogin()).password(editor.getPassword()).roles(editor.getRole().name()).authorities(editor.getRole())))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @After
+    public void dropDb() throws Exception {
+        archiveRep.deleteAllInBatch();
+        requestRep.deleteAllInBatch();
+        photoRep.deleteAllInBatch();
+        constructionRep.deleteAllInBatch();
+        placeRep.deleteAllInBatch();
+        userRep.deleteAllInBatch();
+        municipalityRep.deleteAllInBatch();
     }
 
 }

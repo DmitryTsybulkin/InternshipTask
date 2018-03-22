@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MainController {
 
-    @GetMapping("/")
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public String getIndex() {
         return "index";
     }

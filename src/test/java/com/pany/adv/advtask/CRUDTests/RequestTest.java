@@ -7,6 +7,7 @@ import com.pany.adv.advtask.domain.builders.RequestBuilder;
 import com.pany.adv.advtask.domain.builders.UserBuilder;
 import com.pany.adv.advtask.repository.*;
 import com.pany.adv.advtask.service.convertors.RequestDTOConverter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,6 +139,16 @@ public class RequestTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(converter.toDto(emptyRequest))));
+    }
+
+    @After
+    public void dropDb() throws Exception {
+        requestRep.deleteAllInBatch();
+        photoRep.deleteAllInBatch();
+        constructionRep.deleteAllInBatch();
+        placeRep.deleteAllInBatch();
+        userRep.deleteAllInBatch();
+        municipalityRep.deleteAllInBatch();
     }
 
 }
