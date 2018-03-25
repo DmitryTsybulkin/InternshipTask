@@ -1,6 +1,7 @@
 package com.pany.adv.advtask.dto;
 
 import com.pany.adv.advtask.domain.Roles;
+
 import java.util.List;
 
 public class UserDTO {

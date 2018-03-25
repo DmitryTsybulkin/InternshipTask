@@ -1,10 +1,278 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>home</title>
+    <title>Home</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+    <style>
+        .enterData {
+            width: 80%;
+        }
+    </style>
 </head>
 <body>
-<a href="/login">go</a>
+<p style="margin-top: 2%; margin-left: 2%;"><a href="/logout"><button type="button" class="btn btn-primary">Выйти</button></a></p>
+<div sec:authorize="hasAuthority('ROLE_ADMIN')">
+    <h2 style="text-align: center;">Пользователи</h2>
+    <div style="text-align: center;"><div onclick="list('users_table')" style="color: blue;" id="getUsers">Просмотреть</div></div>
+    <p id="error_users" style="color: red"></p><p id="success_users" style="color: green"></p>
+
+    <div id="users_table" style="display:none;">
+        <input type="button" class="btn btn-info" value="Создать" data-toggle="modal" data-target="#modalUser" />
+
+        <div id="modalUser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Новый пользователь</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" class="enterData" placeholder="Логин" id="login" />
+                        <input type="text" class="enterData" placeholder="Имя" id="name" />
+                        <input type="text" class="enterData" placeholder="Фамилия" id="surname" />
+                        <input type="text" class="enterData" placeholder="Отчество" id="patron" />
+                        <input type="text" class="enterData" placeholder="Муниципалитеты" id="mun" />
+                        <input type="password" class="enterData" placeholder="пароль" id="password" />
+                        <input type="text" class="enterData" placeholder="Роль" id="rol" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" onclick="createUser()" >Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table style="margin: 0 0 10px 10px; text-align: center;" class="table table-bordered">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Логин</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Муниципалитеты</th>
+                <th>Роли</th>
+                <th>Изменить</th>
+                <th>Удалить</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+</div>
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_EDITOR')">
+    <h2 style="text-align: center;">Рекламные конструкции</h2>
+    <div style="text-align: center;">
+        <div ONCLICK="list('constructions')" style="color: blue;" id="getConstruct">Просмотреть</div>
+    </div>
+    <table id="constructions" style="margin: 0 0 10px 10px; text-align: center; display:none;">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>id рекламного места</th>
+            <th>Владелец</th>
+            <th>Номер конструкции</th>
+            <th>Тип</th>
+            <th>Статус</th>
+            <th>Дата создания</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+    </table>
+
+    <h2 style="text-align: center;">Рекламные места</h2>
+    <div style="text-align: center;">
+        <div ONCLICK="list('places')" style="color: blue;" id="getPlaces">Просмотреть</div>
+    </div>
+    <table id="places" style="margin: 0 0 10px 10px; text-align: center; display:none;">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Владелец</th>
+            <th>Адресс</th>
+            <th>Муниципалитеты</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+    </table>
+
+    <h2 style="text-align: center;">Муниципалитеты</h2>
+    <div style="text-align: center;">
+        <div ONCLICK="list('municipalities')" style="color: blue;" id="getMunicipalities">Просмотреть</div>
+    </div>
+    <table id="municipalities" style="margin: 0 0 10px 10px; text-align: center; display:none;">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Название</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USER')">
+    <h2 style="text-align: center;">Запросы</h2>
+    <div style="text-align: center;">
+        <div ONCLICK="list('requests')" style="color: blue;" id="getRequests">Просмотреть</div>
+    </div>
+    <table id="requests" style="margin: 0 0 10px 10px; text-align: center; display:none;">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Дата создания</th>
+            <th>Автор запроса</th>
+            <th>Статус</th>
+            <th>id места</th>
+            <th>id конструкции</th>
+            <th>Редактор</th>
+            <th>Дата обработки</th>
+            <th>Номер версии</th>
+            <th>Причина отклонения</th>
+            <th>Актуальность</th>
+            <th>id фото</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+    </table>
+
+    <h2 style="text-align: center;">Архив</h2>
+    <div style="text-align: center;">
+        <div ONCLICK="list('archive')" style="color: blue;" id="getArchive">Просмотреть</div>
+    </div>
+    <table id="archive" style="margin: 0 0 10px 10px; text-align: center; display:none;">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>id Запроса</th>
+            <th>id Места</th>
+            <th>id Конструкции</th>
+            <th>Дата создания</th>
+            <th>Автор Запроса</th>
+            <th>Редактор</th>
+            <th>Дата обработки</th>
+            <th>Номер версии</th>
+            <th>Причина отклонения</th>
+            <th>Актуальность</th>
+            <th>Изменить</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script>
+    var list = function(id)
+    {
+        var el = document.getElementById(id);
+        el.style.display = ( el.style.display === 'block' )? 'none' : 'block';
+    };
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/users',
+            dataType: 'json',
+            type: 'get',
+            cache: false,
+            success: function (data) {
+                var user_data = '';
+                $.each(data, function (key, value) {
+                    user_data += '<tr>';
+                    user_data += '<td>' + value.id + '</td>';
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Логин" value="' + value.login + '" />' + '</td>';
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Имя" value="' + value.name + '" />' + '</td>';
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Фамилия" value="' + value.surname + '" />' + '</td>';
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Отчество" value="' + value.patronymic + '" />' + '</td>';
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Муниципалитеты" value="';
+
+                    value.municipalities.forEach(function (t, number, ts) {
+                        user_data += t.name;
+                        if (number !== ts.length) {
+                            user_data += ', ';
+                        }
+                    });
+
+                    user_data += '" />';
+
+                    user_data += '</td>';
+
+                    user_data += '<td>' + '<input type="text" class="enterData" placeholder="Роль" value="' + value.role + '" />' + '</td>';
+                    user_data += '<td>' + '<button onclick="updateUser(\'' + data + value.id + value.login + value.name +
+                        value.surname + value.patronymic + value.role + '\')" class="btn btn-warning">' + 'Изменить' + '</button>' + '</td>';
+
+                    user_data += '<td>' + '<button onclick="deleteUser(\'' + value.id + '\')" class="btn btn-danger">' + 'Удалить' + '</button>' + '</td>';
+                    user_data += '</tr>';
+                });
+                $('#users_table').append(user_data);
+            }
+        });
+
+    });
+
+    var createUser = function () {
+        var data = {};
+        data.login = $('#login').html;
+        data.password = "das";
+        data.name = $('#name').html;
+        data.surname = $('#surname').html;
+        data.patronymic = $('#patron').html;
+        data.municipalities = [];
+        data.municipalities.push($('#mun').html);
+        data.role = $('#rol').html;
+        $.ajax({
+            url: "/users",
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: console.log("work!")
+        })
+    };
+
+    var updateUser = function(data, id, login, name, surname, patron, role) {
+        data.login = login;
+        data.name = surname;
+        data.surname = surname;
+        data.patronymic = patron;
+        data.role = role;
+        $.ajax({
+            url: '/users/' + id,
+            type: 'put',
+            data: data,
+            dataType: 'json',
+            success: function () {
+                console.log(JSON.stringify(id))
+            },
+            error: console.log(JSON.stringify(id.toString()))
+        })
+
+    };
+
+    var deleteUser = function(id) {
+        $.ajax({
+            url: '/users/' + id,
+            type: 'delete',
+            cache: false,
+            success: function (id) {
+                console.log('id='+id);
+                location.reload()
+            }
+        })
+    }
+
+</script>
+
 </body>
 </html>

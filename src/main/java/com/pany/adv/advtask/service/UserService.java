@@ -62,7 +62,6 @@ public class UserService {
         targetUser.setLogin(user.getLogin());
         targetUser.setMunicipalities(user.getMunicipalities());
         targetUser.setName(user.getName());
-        targetUser.setPassword(user.getPassword());
         targetUser.setPatronymic(user.getPatronymic());
         targetUser.setSurname(user.getSurname());
         targetUser.setRole(user.getRole());

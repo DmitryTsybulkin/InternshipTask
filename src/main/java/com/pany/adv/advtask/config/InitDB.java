@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.Date;
 
 @Component
@@ -54,6 +55,7 @@ public class InitDB {
     public void insertData() {
 
         municipalityRep.save(new Municipality("bestMunicipality"));
+        municipalityRep.save(new Municipality("secondMunicipality"));
 
         placeRep.save(new AdvPlace("owner", "address", municipalityRep.findOne(1L)));
 
@@ -62,7 +64,7 @@ public class InitDB {
 
         userRep.save(new UserBuilder().withLogin("edit").withPassword(passwordEncoder
                 .encode("edit")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
-                .withMunicipality(municipalityRep.findAll()).withRole(Roles.EDITOR).build());
+                .withMunicipality(Collections.singletonList(municipalityRep.findOne(1L))).withRole(Roles.EDITOR).build());
 
         userRep.save(new UserBuilder().withLogin("user").withPassword(passwordEncoder
                 .encode("user")).withName("BestName").withSurname("BestSurname").withPatronymic("SuperPatron")
